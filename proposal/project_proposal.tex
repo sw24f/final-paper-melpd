@@ -27,13 +27,13 @@
 
 \paragraph{Introduction}
 In hockey, a very common statistic that is reported is the plus/minus statistic. Plus/minus is calculated
-by taking all the even strength goals that were scored by their team was on the ice and subtracting it by 
-the total number of goals that were scored by the other team. The idea behind the number is that it will 
-show if a player has an overall positive or negative contribution when they are playing. However, the plus/minus
-has a lot of drawbacks. For example, in ice hockey, players tend to play on "lines", meaning the same three 
-forwards and the same two defencemen tend to play together. Because of this, plus/minus is heavily influenced 
-by who they play with. Some would argue that the plus/minus is more of a team statistic rather than an individual 
-statistics. Many of the criticisms of this statistic comes from the fact that there are a lot of confounding 
+by taking all the even strength goals that were scored by their team while they were on the ice and subtracting
+it by the total number of goals that were scored by the other team while they were on the ice. The idea behind 
+the number is that it will show if a player has an overall positive or negative contribution when they are playing. 
+However, the plus/minus has a lot of drawbacks. For example, in ice hockey, players tend to play on "lines", meaning 
+the same three forwards and the same two defencemen tend to play at the same time. Because of this, plus/minus is heavily 
+influenced by who they play with. Some would argue that the plus/minus is more of a team statistic rather than an 
+individual statistics. Many of the criticisms of this statistic comes from the fact that there are a lot of confounding 
 variables that influence how the plus/minus is calculated. 
 
 The goal of this paper is to evaluate the effectiveness of the plus/minus statistic. Some of the information
@@ -46,7 +46,13 @@ statistics that have a similar purpose such as CORSI or Fenwick.
 Formulate your research question;
 translate your research question into statistical/data science questions
 
-\lipsum[2]
+Research questions:
+Is the plus/minus statistic an effective way of evaluating a players offensive or defensive
+contribution?
+Is the plus/minus statistic an individual or team statistic?
+Is the plus/minus statistic a better evaluation of a player than other contribution statistics
+such as CORSI or Fenwick?
+
 
 \paragraph{Data}
 Hopefully, you have identified the data needed for your project. Give a
@@ -57,6 +63,8 @@ description about it.
 \paragraph{Research Design and Methods}
 What design or methods will you use?
 
+Since the plus/minus statistic tends to deal with collinearity, a ridge regression might be more
+appropriate for analysis.
 
 \lipsum[4]
 
