@@ -42,9 +42,6 @@ be supplemented or replaced with other metrics.
 
 
 \paragraph{Specific Aims}
-Formulate your research question;
-translate your research question into statistical/data science questions
-
 The goal of this project is to evaluate the effectiveness of the plus/minus statistic. Some of the information
 I am trying to determine is if the plus/minus statistic can be used to determine how good a player is both on
 offense and defense. I also want to see if the plus/minus has any validity being used as an individual
@@ -57,13 +54,18 @@ has been debated. By comparing it with modern metrics, I aim to shed light on it
 
 \paragraph{Data}
 
-I am using data from the National Hockey League (NHL). The data is collected from a website called Natural Stat Trick. 
+I am using data from the National Hockey League (NHL). The data is collected from the websites Natural Stat Trick and NHLEdge. 
 I collected data from the 2021-2022, 2022-2023, and 2023-2024 seasons. I am particularly interested in the advanced hockey 
 statistics that are collected for each player in the NHL. These statistics include CORSI, Fenwick, high-danger chances,
-shooting percentages, and more.
+shooting percentages, and more. This data will also include more basic statistics such as points, goals, assists, plus/minus,
+time on ice, etc.
+
 
 \paragraph{Research Design and Methods}
-What design or methods will you use?
+The first step of the project is to collect all relevant data. In this case, I will be exporting the data from all players
+from the 2021- 2024 seasons into an Excel or csv file. Once the data has been collected, it needs to be cleaned. After the
+data has been prepared, I can start some initial analysis to see what variables are correlated and where issues of collineairty 
+exist, since this will effect which models and variables I use. 
 
 Since the plus/minus statistic tends to deal with collinearity, a ridge regression might be more
 appropriate for analysis. Similar work has been done in \cite{Macdonald_2012}
