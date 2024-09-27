@@ -34,21 +34,21 @@ they are playing. However, the plus/minus has a lot of drawbacks. For example, i
 on "lines", meaning the same three forwards and the same two defencemen tend to play at the same time. Because of this, 
 plus/minus is heavily influenced by who plays with who. Because of this, some argue that the plus/minus is more of a team 
 statistic rather than an individual statistic. Many of the criticisms of this statistic comes from the fact that
-there are a lot of confounding variables that influence how the plus/minus is calculated. Alternatives to the plus/minus 
-statistic have been developed, such as COSRI or Fenwick. Understanding the limitations and potential of plus/minus can 
-help coaches, analysts, and fans better interpret player data. While advanced statistics are valuable, plus/minus is still 
-popular, especially among casual fans. The project explores whether the plus/minus still holds relevance or whether it should 
-be supplemented or replaced with other metrics.
+there are a lot of confounding variables that influence how the plus/minus is calculated. According to Brian MacDonald 
+"The traditional plus-minus statistic in hockey is highly dependent on a player’s teammates and opponents" \cite{Macdonald_2011}.
+Alternatives to the plus/minus statistic have been developed, such as COSRI or Fenwick. Understanding the limitations and
+potential of plus/minus can help coaches, analysts, and fans better interpret player data. While advanced statistics are valuable, 
+plus/minus is still popular, especially among casual fans. The project explores whether the plus/minus still holds relevance or 
+whether it should be supplemented or replaced with other metrics.
 
 
 \paragraph{Specific Aims}
-The goal of this project is to evaluate the effectiveness of the plus/minus statistic. Some of the information
-I am trying to determine is if the plus/minus statistic can be used to determine how good a player is both on
-offense and defense. I also want to see if the plus/minus has any validity being used as an individual
-statistic or as a team statistic. Based on my observations, I will compare the plus/minus statistic to other
-statistics that have a similar purpose such as CORSI or Fenwick.
-These questions are critical as plus/minus is used in scouting and analysis, but its reliability 
-has been debated. By comparing it with modern metrics, I aim to shed light on its true value in player evaluation.
+The goal of this project is to evaluate the effectiveness of the plus/minus statistic. Some of the information I am trying
+to determine is if the plus/minus statistic can be used to determine how good a player is both on offense and defense. I 
+also want to see if the plus/minus has any validity being used as an individual statistic or as a team statistic. Based on my 
+observations, I will compare the plus/minus statistic to other statistics that have a similar purpose such as CORSI or Fenwick. 
+These questions are critical as plus/minus is used in scouting and analysis, but its reliability has been debated. By comparing 
+it with modern metrics, I aim to shed light on its true value in player evaluation.
 
 
 
@@ -62,13 +62,20 @@ time on ice, etc.
 
 
 \paragraph{Research Design and Methods}
+This study will evaluate the effectiveness of the plus/minus statistic in ice hockey to determine whether it can assess a 
+player's offensive or defensive contributions and if it should be treated as an individual or team statistic. The analysis 
+will also compare plus/minus with other advanced hockey metrics, such as Corsi and Fenwick, to assess its overall utility.
+
 The first step of the project is to collect all relevant data. In this case, I will be exporting the data from all players
 from the 2021- 2024 seasons into an Excel or csv file. Once the data has been collected, it needs to be cleaned. After the
-data has been prepared, I can start some initial analysis to see what variables are correlated and where issues of collineairty 
+data has been prepared, I can start some initial analysis to see what variables are correlated and where issues of collinearity 
 exist, since this will effect which models and variables I use. 
 
-Since the plus/minus statistic tends to deal with collinearity, a ridge regression might be more
-appropriate for analysis. Similar work has been done in \cite{Macdonald_2012}
+In order to determine if or how plus/minus can be used to assess offensive and defensive contribution, I will use a ridge 
+regression. Since the plus/minus statistic tends to deal with collinearity, a ridge regression might be more appropriate for 
+analysis. Similar work has been done in \cite{Macdonald_2012}. The coefficients from the ridge regression model will reveal 
+whether offensive or defensive metrics contribute more to explaining plus/minus. I plan on using a similar 
+
 
 
 \paragraph{Discussion}
@@ -76,6 +83,9 @@ What are the most challenge parts of the task?
 What are the limitations of your work? What is your fall-back plan if
 something unexpected happens?
 
+According to Brian MacDonald in his ridge regression analysis of the plus/minus, "Ridge regression frequently reduces the error 
+bounds in the estimates and improves the predictive performance of the model when collinearly exists in the data. Ridge regression 
+introduces bias in the estimates, but the tradeoff is typically worthwhile." \cite{Macdonald_2012}.
 
 \bibliography{../manuscript/refs}
 \bibliographystyle{chicago}
