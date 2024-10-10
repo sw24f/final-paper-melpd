@@ -70,23 +70,46 @@ from functools import reduce
 nst = pd.read_csv('data\Player Season Totals - Natural Stat Trick.csv')
 #print(nst.head())
 
-edge1 = pd.read_excel(f'data\Summary(1).xlsx')
-edge2 = pd.read_excel(f'data\Summary(2).xlsx')
-edge3 = pd.read_excel(f'data\Summary(3).xlsx')
-edge4 = pd.read_excel(f'data\Summary(4).xlsx')
-edge5 = pd.read_excel(f'data\Summary(5).xlsx')
-edge6 = pd.read_excel(f'data\Summary(6).xlsx')
-edge7 = pd.read_excel(f'data\Summary(7).xlsx')
-edge8 = pd.read_excel(f'data\Summary(8).xlsx')
-edge9 = pd.read_excel(f'data\Summary(9).xlsx')
-edge10 = pd.read_excel(f'data\Summary(10).xlsx')
-edge11 = pd.read_excel(f'data\Summary(11).xlsx')
-edge12 = pd.read_excel(f'data\Summary(12).xlsx')
-edge13 = pd.read_excel(f'data\Summary(13).xlsx')
+edge1 = pd.read_excel('data\\Summary (1).xlsx')
+edge2 = pd.read_excel('data\\Summary (2).xlsx')
+edge3 = pd.read_excel('data\\Summary (3).xlsx')
+edge4 = pd.read_excel('data\Summary (4).xlsx')
+edge5 = pd.read_excel('data\Summary (5).xlsx')
+edge6 = pd.read_excel('data\Summary (6).xlsx')
+edge7 = pd.read_excel('data\Summary (7).xlsx')
+edge8 = pd.read_excel('data\Summary (8).xlsx')
+edge9 = pd.read_excel('data\Summary (9).xlsx')
+edge10 = pd.read_excel('data\Summary (10).xlsx')
+edge11 = pd.read_excel('data\Summary (11).xlsx')
+edge12 = pd.read_excel('data\Summary (12).xlsx')
+edge13 = pd.read_excel('data\Summary (13).xlsx')
 
 edges = [edge1, edge2, edge3, edge4, edge5, edge6, edge7, edge8, edge9, edge10, edge11, edge12, edge13]
 
-nhl_edge = reduce(lambda left, right: pd.merge(left, right, on='team', how='outer'), edges)
+import pandas as pd
+from functools import reduce
+
+# Custom function to merge only if values are the same for duplicate columns
+def merge_duplicates(df, suffixes=('_x', '_y')):
+    # Identify columns with suffixes
+    cols_x = [col for col in df.columns if col.endswith(suffixes[0])]
+    cols_y = [col for col in df.columns if col.endswith(suffixes[1])]
+    
+    # Iterate over columns with suffixes
+    for col_x in cols_x:
+        col_y = col_x.replace(suffixes[0], suffixes[1])
+        if col_y in cols_y:
+            # Check if values are equal in both columns
+            df[col_x.replace(suffixes[0], '')] = df[col_x].combine_first(df[col_y])
+            # Drop the duplicate columns
+            df.drop([col_x, col_y], axis=1, inplace=True)
+    return df
+
+# Perform the merge and resolve duplicates
+nhl_edge = reduce(lambda left, right: pd.merge(left, right, on='Player', how='outer', suffixes=('_x', '_y')), edges)
+
+# Call the custom function to merge duplicate columns if values are the same
+nhl_edge_cleaned = merge_duplicates(nhl_edge)
 
 print(nst.dtypes)
 
