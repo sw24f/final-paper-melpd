@@ -89,27 +89,42 @@ edges = [edge1, edge2, edge3, edge4, edge5, edge6, edge7, edge8, edge9, edge10, 
 import pandas as pd
 from functools import reduce
 
-# Custom function to merge only if values are the same for duplicate columns
-def merge_duplicates(df, suffixes=('_x', '_y')):
-    # Identify columns with suffixes
-    cols_x = [col for col in df.columns if col.endswith(suffixes[0])]
-    cols_y = [col for col in df.columns if col.endswith(suffixes[1])]
+import pandas as pd
+from functools import reduce
+
+import pandas as pd
+from functools import reduce
+
+# Helper function to resolve conflicts between two DataFrames during the merge
+def merge_and_resolve_conflicts(left, right, on='Player', suffixes=('_x', '_y')):
+    merged_df = pd.merge(left, right, on=on, how='outer', suffixes=suffixes)
     
-    # Iterate over columns with suffixes
+    # Find columns with suffixes
+    cols_x = [col for col in merged_df.columns if col.endswith(suffixes[0])]
+    cols_y = [col for col in merged_df.columns if col.endswith(suffixes[1])]
+    
     for col_x in cols_x:
+        # Get the corresponding _y column name
         col_y = col_x.replace(suffixes[0], suffixes[1])
-        if col_y in cols_y:
-            # Check if values are equal in both columns
-            df[col_x.replace(suffixes[0], '')] = df[col_x].combine_first(df[col_y])
-            # Drop the duplicate columns
-            df.drop([col_x, col_y], axis=1, inplace=True)
-    return df
+        
+        if col_y in merged_df.columns:
+            # Create the original column name (without suffixes)
+            col_base = col_x.replace(suffixes[0], '')
+            
+            # Use combine_first() to keep non-null values from both columns
+            merged_df[col_base] = merged_df[col_x].combine_first(merged_df[col_y])
+            
+            # Drop the suffixed columns
+            merged_df.drop([col_x, col_y], axis=1, inplace=True)
+    
+    return merged_df
 
-# Perform the merge and resolve duplicates
-nhl_edge = reduce(lambda left, right: pd.merge(left, right, on='Player', how='outer', suffixes=('_x', '_y')), edges)
+# Merging multiple DataFrames using reduce and custom conflict resolution
+nhl_edge = reduce(lambda left, right: merge_and_resolve_conflicts(left, right), edges)
 
-# Call the custom function to merge duplicate columns if values are the same
-nhl_edge_cleaned = merge_duplicates(nhl_edge)
+# Check the result
+print(nhl_edge.head())
+
 
 print(nst.dtypes)
 
