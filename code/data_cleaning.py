@@ -122,9 +122,14 @@ def merge_and_resolve_conflicts(left, right, on='Player', suffixes=('_x', '_y'))
 # Merging multiple DataFrames using reduce and custom conflict resolution
 nhl_edge = reduce(lambda left, right: merge_and_resolve_conflicts(left, right), edges)
 
-# Check the result
-print(nhl_edge.head())
+nhl_edge = nhl_edge.drop('FOW%', axis=1)
 
+nhl_edge = nhl_edge[nhl_edge['GP'] > 15]
+#print(nhl_edge.head())
+print(nhl_edge.dtypes)
 
-print(nst.dtypes)
+#To Do:
+# remove players with less than 15 games played
+# fix format of TOI/GP
+# change S and S% to float
 
