@@ -89,12 +89,6 @@ edges = [edge1, edge2, edge3, edge4, edge5, edge6, edge7, edge8, edge9, edge10, 
 import pandas as pd
 from functools import reduce
 
-import pandas as pd
-from functools import reduce
-
-import pandas as pd
-from functools import reduce
-
 # Helper function to resolve conflicts between two DataFrames during the merge
 def merge_and_resolve_conflicts(left, right, on='Player', suffixes=('_x', '_y')):
     merged_df = pd.merge(left, right, on=on, how='outer', suffixes=suffixes)
@@ -122,14 +116,28 @@ def merge_and_resolve_conflicts(left, right, on='Player', suffixes=('_x', '_y'))
 # Merging multiple DataFrames using reduce and custom conflict resolution
 nhl_edge = reduce(lambda left, right: merge_and_resolve_conflicts(left, right), edges)
 
-nhl_edge = nhl_edge.drop('FOW%', axis=1)
+nhl_edge = nhl_edge.drop(['FOW%', 'PIM'], axis=1)
 
 nhl_edge = nhl_edge[nhl_edge['GP'] > 15]
-#print(nhl_edge.head())
+
+
+nhl_edge.fillna(0, inplace=True)
+
+print(nhl_edge.head())
 print(nhl_edge.dtypes)
 
+# Function to convert 'Minutes:Seconds' to float
+def convert_to_float(time_str):
+    minutes, seconds = map(int, time_str.split(':'))
+    return minutes + (seconds / 60.0)
+
+# Apply the function to the column
+nhl_edge['TOI/GP'] = nhl_edge['TOI/GP'].apply(convert_to_float)
+
+nhl_edge.fillna(0, inplace=True)
+# View the result
+print(nhl_edge.head(-5))
+print(nhl_edge.dtypes)
 #To Do:
-# remove players with less than 15 games played
-# fix format of TOI/GP
 # change S and S% to float
 
