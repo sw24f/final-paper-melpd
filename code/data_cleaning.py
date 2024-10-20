@@ -135,9 +135,22 @@ def convert_to_float(time_str):
 nhl_edge['TOI/GP'] = nhl_edge['TOI/GP'].apply(convert_to_float)
 
 nhl_edge.fillna(0, inplace=True)
-# View the result
-print(nhl_edge.head(-5))
-print(nhl_edge.dtypes)
 #To Do:
 # change S and S% to float
+def clean_columns(df, columns):
+    for col in columns:
+        # Replace dashes with NaN (or 0 if you prefer)
+        df[col] = df[col].replace('--', 0)
+        # Convert to numeric type
+        df[col] = pd.to_numeric(df[col], errors='coerce')
+    return df
 
+# Clean the 'S' and 'S%' columns
+nhl_edge = clean_columns(nhl_edge, ['S', 'S%'])
+
+# Check the result
+print(nhl_edge[['Player', 'S', 'S%']].head())
+
+# View the result
+print(nhl_edge.head())
+print(nhl_edge.dtypes)
