@@ -152,5 +152,11 @@ nhl_edge = clean_columns(nhl_edge, ['S', 'S%'])
 print(nhl_edge[['Player', 'S', 'S%']].head())
 
 # View the result
-print(nhl_edge.head())
-print(nhl_edge.dtypes)
+#print(nhl_edge.head())
+#print(nhl_edge.dtypes)
+
+# Specify the path to save the CSV file
+csv_file_path = 'data/cleaned_nhl_edge.csv'
+
+# Save the nhl_edge DataFrame as a CSV file
+nhl_edge.to_csv(csv_file_path, index=False)
