@@ -68,7 +68,19 @@ Off. Zone Faceoff % - Percentage of faceoffs in the offensive zone for which the
 import pandas as pd
 from functools import reduce
 nst = pd.read_csv('data\Player Season Totals - Natural Stat Trick.csv')
-#print(nst.head())
+print(nst.head())
+
+nst['SF%'].fillna(0, inplace=True)
+nst['GF%'].fillna(0, inplace=True)
+nst['SCF%'].fillna(0, inplace=True)
+nst['HDCF%'].fillna(0, inplace=True)
+nst['HDGF%'].fillna(0, inplace = True)
+nst['On-Ice SH%'].fillna(0, inplace=True)
+nst['On-Ice SV%'].fillna(0, inplace=True)
+nst['PDO'].fillna(0, inplace=True)
+nst['Off. Zone Start %'].fillna(0, inplace=True)
+nst['Off. Zone Faceoff %'].fillna(0, inplace=True)
+print(nst.dtypes)
 
 edge1 = pd.read_excel('data\\Summary (1).xlsx')
 edge2 = pd.read_excel('data\\Summary (2).xlsx')
@@ -135,13 +147,10 @@ def convert_to_float(time_str):
 nhl_edge['TOI/GP'] = nhl_edge['TOI/GP'].apply(convert_to_float)
 
 nhl_edge.fillna(0, inplace=True)
-#To Do:
-# change S and S% to float
+
 def clean_columns(df, columns):
     for col in columns:
-        # Replace dashes with NaN (or 0 if you prefer)
         df[col] = df[col].replace('--', 0)
-        # Convert to numeric type
         df[col] = pd.to_numeric(df[col], errors='coerce')
     return df
 
@@ -159,4 +168,7 @@ print(nhl_edge[['Player', 'S', 'S%']].head())
 csv_file_path = 'data/cleaned_nhl_edge.csv'
 
 # Save the nhl_edge DataFrame as a CSV file
-nhl_edge.to_csv(csv_file_path, index=False)
+#nhl_edge.to_csv(csv_file_path, index=False)
+nst = clean_columns(nst, ['SF%', 'GF%', 'SCF%', 'HDCF%','HDGF%', 'On-Ice SH%', 'On-Ice SV%', 'PDO', 'Off. Zone Start %', 'Off. Zone Faceoff %'])
+print(nst.dtypes)
+nst.to_csv('data/cleaned_nst.csv', index=False)
