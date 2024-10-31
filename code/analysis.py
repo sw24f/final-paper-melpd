@@ -1,7 +1,7 @@
 import pandas as pd
 
 nhl_edge = pd.read_csv('data\cleaned_nhl_edge.csv')
-nst = pd.read_csv('data\Player Season Totals - Natural Stat Trick.csv')
+nst = pd.read_csv('data\cleaned_nst.csv')
 nhl = pd.merge(nhl_edge, nst, on='Player', how='inner')  # 'inner' merge keeps only players present in both datasets
 
 # Identify collinearity
@@ -91,11 +91,11 @@ X_scaled_d = scaler.fit_transform(X_d)
 X_train_d, X_test_d, y_train_d, y_test_d = train_test_split(X_scaled_d, y_d, test_size=0.2, random_state=42)
 
 # Fit Ridge Regression Model
-ridge = Ridge(alpha=1.0)  # alpha is the regularization strength (lambda in ridge regression)
-ridge.fit(X_train_d, y_train_d)
+ridge_d = Ridge(alpha=1.0)  # alpha is the regularization strength (lambda in ridge regression)
+ridge_d.fit(X_train_d, y_train_d)
 
 # Evaluate the model using cross-validation
-cv_scores_d = cross_val_score(ridge, X_train_d, y_train_d, cv=5)
+cv_scores_d = cross_val_score(ridge_d, X_train_d, y_train_d, cv=5)
 print("Cross-Validation Scores (Defensive):", cv_scores_d)
 
 
@@ -109,7 +109,7 @@ nhl['TeamMean_GF%'] = nhl.groupby('Team')['GF%'].transform('mean')
 
 # Define features (team and player contributions)
 X = nhl[['CF%', 'GF%', 'TeamMean_CF%', 'TeamMean_GF%']]
-y = nhl['PlusMinus']
+y = nhl['+/-']
 
 # Fit a Mixed-Effects model with team as a random effect
 md = MixedLM(y, X, groups=nhl['Team'])
@@ -118,3 +118,47 @@ print(mdf.summary())
 
 
 # Plus minus vs other evaluators
+
+X_corsi = nhl[['GF%', 'SCF%', 'HDCF%', 'PDO', 'On-Ice SH%', 'On-Ice SV%', 'G', 'A']]
+y_cf = nhl['CF%']  # Plus/minus as the target variable
+
+# Scale the features for Ridge Regression
+scaler = StandardScaler()
+X_scaled_c = scaler.fit_transform(X_corsi)
+
+# Split the data into training and test sets
+X_train_c, X_test_c, y_train_c, y_test_c = train_test_split(X_scaled_c, y_cf, test_size=0.2, random_state=42)
+
+# Fit Ridge Regression Model
+ridge_c = Ridge(alpha=1.0)  # alpha is the regularization strength (lambda in ridge regression)
+ridge_c.fit(X_train_c, y_train_c)
+
+# Evaluate the model using cross-validation
+cv_scores_c = cross_val_score(ridge_c, X_train_c, y_train_c, cv=5)
+print("Cross-Validation Scores (Corsi):", cv_scores_c)
+
+# Predict on the test set
+y_pred_c = ridge_c.predict(X_test_c)
+
+
+
+X_fen = nhl[['GF%', 'SCF%', 'HDCF%', 'PDO', 'On-Ice SH%', 'On-Ice SV%', 'G', 'A']]
+y_ff = nhl['FF%']  # Plus/minus as the target variable
+
+# Scale the features for Ridge Regression
+scaler = StandardScaler()
+X_scaled_f = scaler.fit_transform(X_fen)
+
+# Split the data into training and test sets
+X_train_f, X_test_f, y_train_f, y_test_f = train_test_split(X_scaled_f, y_ff, test_size=0.2, random_state=42)
+
+# Fit Ridge Regression Model
+ridge_f = Ridge(alpha=1.0)  # alpha is the regularization strength (lambda in ridge regression)
+ridge_f.fit(X_train_f, y_train_f)
+
+# Evaluate the model using cross-validation
+cv_scores_f = cross_val_score(ridge_f, X_train_f, y_train_f, cv=5)
+print("Cross-Validation Scores (Fenwick):", cv_scores_f)
+
+# Predict on the test set
+y_pred_f = ridge_f.predict(X_test_f)
