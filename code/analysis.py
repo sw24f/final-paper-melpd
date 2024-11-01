@@ -3,7 +3,7 @@ import pandas as pd
 nhl_edge = pd.read_csv('data\cleaned_nhl_edge.csv')
 nst = pd.read_csv('data\cleaned_nst.csv')
 nhl = pd.merge(nhl_edge, nst, on='Player', how='inner')  # 'inner' merge keeps only players present in both datasets
-
+nhl = nhl[nhl['GP_x'] > 25]
 # Identify collinearity
 #print(nhl_edge.describe())
 # Select only numerical columns
