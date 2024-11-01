@@ -10,6 +10,9 @@ nhl = nhl[nhl['GP_x'] > 25]
 nhl_edge_numeric = nhl_edge.select_dtypes(include=['number'])
 correlation_matrix = nhl_edge_numeric.corr()
 #print(correlation_matrix)
+with open("correlation_matrix.tex", "w") as file:
+    file.write(correlation_matrix.to_latex())
+
 
 import matplotlib.pyplot as plt
 """
