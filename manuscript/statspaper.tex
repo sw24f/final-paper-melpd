@@ -93,8 +93,6 @@ of offensive and defensive output? Is the plus-minus more reflective of how well
 Are there better alternatives to evaluating individual player contribution? These are the questions that will be answered from this analysis.
 
 
-
-
 % roadmap
 The rest of the paper is organized as follows.
 The data will be presented in Section~\ref{sec:data}.
@@ -253,8 +251,9 @@ advanced and uncovential statistics, there are more factors to consider in evalu
 Use this section to present the methodologies that will generate results by
 analyzing the data. 
 
-The main issue with the data is the violation of independence. This can be seen by creating a confusion matrix of the some 
-of the more basic nhl statistics. 
+\subsection{Correlation Analysis}
+The main issue with the data is multicollinearity, where independent variables are highly correlated. A correlation matrix was created 
+with some of the more basic nhl statistics to highlight this issue, shown in Table \ref{tab:correlation_matrix}.
 
 \begin{table}[h!]
   \centering
@@ -263,27 +262,34 @@ of the more basic nhl statistics.
   \label{tab:correlation_matrix}
 \end{table}
 
-
 There is a high correlation between different shot related statistics and point related statistics. For example, there is a 
 0.826371 correlation between Goals and Shots. This makes since because in order to score a goal, the player needs to shoot first.
 Correlation analysis can be used to identify the strength and direction of the relationship between various advanced metrics and 
-the plus/minus statistic. This was done by calculating the correlation coefficient between +/- and each metric (like CF\%, GF\%, SCF\%, etc.).
-The correlation values, ranging from -1 to 1, tell us how closely each metric aligns with the plus/minus. Higher positive correlations 
-(e.g., with GF\% and PDO) indicate metrics that vary similarly to plus/minus, suggesting that they may capture overlapping aspects of 
-offensive or defensive performance.
+the plus/minus statistic. Metrics with high positive correlations (e.g., GF\% and PDO) suggest a strong alignment with the plus/minus, 
+indicating that they may reflect similar aspects of offensive or defensive performance. This was done by calculating the correlation 
+coefficient between +/- and each metric (like CF\%, GF\%, SCF\%, etc.).The correlation values, ranging from -1 to 1, tell us how closely 
+each metric aligns with the plus/minus. Higher positive correlations (e.g., with GF\% and PDO) indicate metrics that vary similarly to 
+plus/minus, suggesting that they may capture overlapping aspects of offensive or defensive performance.
+
+\subsection{Ridge Regression}
 
 Due to the presence of correlation among variables, ridge regression was performed in order to identify how plus/minus can be employed 
 to assess offensive and defensive contribution. It was also used to determine if other advanced metrics Corsi or Fenwick have the same, 
-better, or worse predictive abilities compared to plus-minus. Ridge regression, a form of linear regression, is valuable when dealing 
-with datasets with multicollinearity, where predictor variables have some sort of relationship with one another. This applies to hockey metrics 
-like Corsi, Fenwick, scoring chances, etc. since these stats often interact or overlap in measuring aspects of performance.
+better, or worse predictive abilities compared to plus-minus. Ridge regression, a form of regularized linear regression, is beneficial 
+in handling datasets where predictor variables are highly interrelated, as is the case with advanced hockey metrics. Ridge regression 
+estimates the contribution of metrics like Corsi, Fenwick, and scoring chances while controlling for their interdependencies. This 
+applies to hockey metrics like Corsi, Fenwick, scoring chances, etc. since these statistics often interact or overlap in measuring aspects 
+of performance.
 
+\subsection{Cross-Validation}
 Coupled with ridge regression, cross validation was utilized to assess the predictive power of different groups of variables (offensive, 
 defensive, possession-based) on the plus/minus statistic. Cross-validation splits the data into training and testing sets multiple times, 
 computing a model's predictive accuracy each time. In this case, the data was split into five subsets. In each iteration, one subset was
 kept as the test set and the other four were used to train the ridge regression model. The R-sqared value was reported for each iteration
-to measure how well offensive, defensive, and possession-based metrics (like Corsi and Fenwick) predict plus/minus.
+to measure how well offensive, defensive, and possession-based metrics (like Corsi and Fenwick) predict plus/minus. This process ensures 
+that the model’s performance is consistent across different data partitions.
 
+\subsection{Mixed Model Effects}
 In order to separate individual contributions to plus/minus from team-level effects, a mixed-effects model was used. Mixed-effects models 
 allow for random effects, capturing variability at the team level, while fixed effects capture individual-level metrics. Individual metrics 
 like CF\%, GF\%, and others were included that directly measure a player's on-ice performance. The model considered team-level averages 
@@ -293,12 +299,87 @@ like CF\%, GF\%, and others were included that directly measure a player's on-ic
 \section{Results}
 \label{sec:resu}
 
-Correlation with Plus/Minus (+/-):
+The results of taking the correlation coefficients of plus-minus versus every other column is as follows:
 
-Metrics such as GF\%, SF\%, PDO, xGF\%, and HDGF\% show a relatively strong correlation with plus/minus, which aligns with 
-expectations since these metrics also track goal-related contributions. 
 
-Cross-Validation Scores:
+\begin{table}[tbp]
+  \caption{Cross Validation Scores}
+  \label{tab:rv}
+\centering
+\begin{tabular}{rrr}
+  \toprule
+Variable & Correlation Coefficient \\ 
+  \midrule
+  GP & 0.232144
+  G & 0.237058
+  A & 0.342538
+  P & 0.314842
+  +/- & 1.000000
+  P/GP & 0.277666
+  EVG & 0.239076
+  EVP & 0.336372
+  PPG & 0.187284
+  PPP & 0.226803
+  SHG & 0.177479
+  SHP & 0.282570
+  OTG & 0.161693
+  GWG & 0.305998
+  S & 0.255841
+  S\% & 0.048282
+  TOI/GP & 0.253234
+  TOI & 0.291711
+  CF & 0.369200
+  CA & 0.210752
+  CF\% & 0.533927
+  FF & 0.373707
+  FA & 0.213121
+  FF\% & 0.553993
+  SF & 0.376144
+  SA & 0.211659
+  SF\% & 0.568873
+  GF & 0.423772
+  GA & 0.083042
+  GF\% & 0.705010
+  xGF & 0.386643
+  xGA & 0.195763
+  xGF\% & 0.585988
+  SCF & 0.387204
+  SCA & 0.191645
+  SCF\% & 0.585252
+  HDCF & 0.399467
+  HDCA & 0.195659
+  HDCF\% & 0.551392
+  HDGF & 0.442448
+  HDGA & 0.092987
+  HDGF\% & 0.614221
+  On-Ice SH\% & 0.324061
+  On-Ice SV\% & 0.419340
+  PDO & 0.546471
+  Off. Zone Starts & 0.309539
+  Neu. Zone Starts & 0.294922
+  Def. Zone Starts & 0.236777
+  On The Fly Starts & 0.273141
+  Off. Zone Start \% & 0.110750
+  Off. Zone Faceoffs & 0.353819
+  Neu. Zone Faceoffs & 0.314974
+  Def. Zone Faceoffs & 0.262650
+  Off. Zone Faceoff \% & 0.182999
+  \bottomrule
+\end{tabular}
+\end{table}
+
+Metrics such as GF\%, FF\%, SF\%, PDO, xGF\%, and HDGF\% show a relatively strong correlation with plus/minus (0.705010, 0.553993, 0.568873, 
+0.546471, 0.585988, 0.614221 respectively), which aligns with expectations since many of these metrics also track goal-related contributions. 
+Higher positive correlations indicate metrics that vary similarly to plus/minus, suggesting that they may capture overlapping aspects of
+offensive or defensive performance.
+
+
+Ridge regression was performed on three different sets of variables: combined metrics, offensive only, and defensive only. The combined
+metrics consisted of Goals For Percentage(GF\%), Scoring Chances Percentage (SF\%), High-Danger Chances while that player is on the ice (HDSC\%),
+combined shooting and save percentage (PDO), Percent of shots that were goals for (On-Ice SH\%), High-Danger Goals for while that player is 
+on the ice (HDGC\%). All of these metrics are similar to plus-minus in that they combine the defensive and offensive factors together.
+The offensive only metrics were CF, FF, SF, GF, SCF, HDCF, HDGF, GF\%, G, A, P/GP, CF\%, SCF\%, and On-Ice SH\%. The defensive only metrics were
+CA, FA, SA, GA, SCF, HDCA, HDGA, On-Ice SV\%. The results can be seen in the table below.
 
 Offensive/Defensive Combined: Averages around 0.53, indicating that these metrics explain a moderate proportion of the variance in plus/minus.
 Offensive Only: Cross-validation scores are around 0.63, suggesting that offensive metrics alone are somewhat predictive of plus/minus, 
@@ -308,12 +389,6 @@ the role of plus/minus in capturing defensive contributions.
 Corsi and Fenwick: Both show very high cross-validation scores, with Fenwick performing slightly better, indicating that these 
 possession-based metrics are strong predictors.
 
-Mixed Effects Model:
-
-The significant coefficients for both GF\% and team averages, negative for TeamMeanCF\% and positive for TeamMeanGF\%, imply that 
-team-level factors substantially impact individual plus/minus scores.
-This aligns with the idea that plus/minus is both a team and individual statistic, as team-level scoring factors are significant predictors.
-
 \begin{table}[tbp]
   \caption{Cross Validation Scores}
   \label{tab:rv}
@@ -322,14 +397,46 @@ This aligns with the idea that plus/minus is both a team and individual statisti
   \toprule
 Both & Offensive & Defensive \\ 
   \midrule
-  0.56777061 & 0.64692431 & 0.73265605 \\ 
-  0.51687324 & 0.62667921 & 0.70862251 \\ 
-  0.49576518 & 0.62263538 & 0.69467537 \\ 
-  0.49576518 & 0.58484799 & 0.65315835 \\ 
-  0.61054685 & 0.69145036 & 0.76239753 \\ 
+  0.5696297 & 0.64692431 & 0.73265605 \\ 
+  0.50125171 & 0.62667921 & 0.70862251 \\ 
+  0.47617049 & 0.62263538 & 0.69467537 \\ 
+  0.48944826 & 0.58484799 & 0.65315835 \\ 
+  0.57586267 & 0.69145036 & 0.76239753 \\ 
+  \bottomrule
+\end{tabular}
+\end{table}
+
+Mixed Effects Model:
+
+
+The significant coefficients for both GF\% and team averages, negative for TeamMeanCF\% and positive for TeamMeanGF\%, imply that 
+team-level factors substantially impact individual plus/minus scores.
+This aligns with the idea that plus/minus is both a team and individual statistic, as team-level scoring factors are significant predictors.
+
+Plus-Minus vs Corsi vs Fenwick
+
+Both Corsi and Fenwick were used as predictors in ridge regression with the variables GF\%, SCF\%, HDCF\%, PDO, On-Ice SH\%, On-Ice SV\%, G, A.
+The results of the cross validation are shown in the table below
+
+\begin{table}[tbp]
+  \caption{Cross Validation Scores}
+  \label{tab:rv}
+\centering
+\begin{tabular}{rrr}
+  \toprule
+Corsi & Fenwick \\ 
+  \midrule
+  0.93898296 & 0.95099819 \\ 
+  0.90054897 & 0.93012992 \\ 
+  0.93915158 & 0.9528202 \\ 
+  0.92841222 & 0.95201592 \\ 
+  0.9325304 & 0.95921829 \\ 
    \bottomrule
 \end{tabular}
 \end{table}
+
+These values are notibly better that the cross validation scores for plus-minus, regardless of which set of predictors. This indicates
+that both Corsi and Fenwick are significantly better at predicting player effectiveness than plus-minus.
 
 
 \section{Discussion}
