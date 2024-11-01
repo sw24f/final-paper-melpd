@@ -43,7 +43,7 @@
 
 %% meta data
 
-\title{Hockey's Most Controversial Statistic: An Analysis of the Plus-Minus Statistic}
+\title{Hockey's Most Controversial Statistic: An Analysis of the Effectiveness of the Plus-Minus Statistic}
 \author{Melanie Desroches\\
   Department of Statistics\\
   University of Connecticut
@@ -77,16 +77,20 @@ statistic is used is basketball and ice hockey.
 
 While the plus-minus statistic is a great idea in theory, it does not come without it's weaknesses. The biggest drawback to this
 statistic is its issues with independece. Take ice hockey for example. Many ice hockey players tend to play on "lines", meaning the same three 
-forwards tend to play together and the same two defensemen play together. As a result, the performance of one player is highly dependent 
+forwards tend to play together and the same two defensemen usually play together. As a result, the performance of one player is highly dependent 
 on the performance of their linemates. In "A Regression-based Adjusted Plus-Minus Statistic for NHL Players" \cite{Macdonald_2011}, Brian
-MacDonald provides a perfect example of this with the Henrik and Daniel Sedin, Swedish twins who played together for the Vancouver Canucks.
-Many critics of the plus-minus argue that plus-minus is more of a team statistic, since it is heavily influenced by team dynamics rather than
-individual contributions. Furthermore, numerous confounding variables, such as the quality of the opponent and situational factors, make the 
-calculation less reliable. As a result of these criticisms, alternatives to the plus-minus statistic have been developed, such as Corsi or 
-Fenwick, which is calculated using shot attempts rather than goals.
+MacDonald provides a perfect example of this with the Henrik and Daniel Sedin, Swedish twins who played together for the Vancouver Canucks. 
+ \cite[Daniel spent 92\% of his playing time with Henrik, the highest percentage of any other player combination where both players have
+played over 700 minutes. Because of this high colinearity between the twins, it is difficult to separate the individual effect that each 
+player has on the net goals scored on the ice.]{Macdonald_2012} Many critics of the plus-minus argue that plus-minus is more of a team 
+statistic, since it is heavily influenced by team dynamics rather than individual contributions. Furthermore, numerous confounding variables, 
+such as the quality of the opponent and situational factors, make the calculation less reliable. As a result of these criticisms, alternatives 
+to the plus-minus statistic have been developed, such as Corsi or Fenwick, which is calculated using shot attempts rather than goals.
 
 The goal of this project will be to shed light on this controversial statistic and determine if plus-minus is truely an effective predictor
-to individual contribution, specifically in ice hockey. 
+to individual contribution, specifically in the National Hockey League (hereforth refered to as the NHL). Is the plus-minus a good evaluator 
+of offensive and defensive output? Is the plus-minus more reflective of how well a player is doing than how well a player is preforming? 
+Are there better alternatives to evaluating individual player contribution? These are the questions that will be answered from this analysis.
 
 
 
@@ -103,14 +107,141 @@ A discussion concludes in Section~\ref{sec:disc}.
 \label{sec:data}
 
 Use this section to describe the data that helps to answer your research
-questions. Recall Einstein's equation
-\begin{equation}
-  \label{eq:mc2}
-  E = m c^2,
-\end{equation}
-which states that the energy $E$ of a particle in its rest frame as the product
-of mass ($m$) with the speed of light squared ($c^2$).
-\lipsum{1}
+questions.
+
+The data used to perform this analysis was collected from Natural Stat Trick and the NHL website. The observations in the data
+is from all players that played in the National Hockey League from the 2021-2022, 2022-2023, and 2023-2024 seasons. The columns
+of the dataset will be combined from the two data sources. The following is a description of each of the columns in the dataset
+obtained from the Natural Stat Trick website:
+
+Player - Player name.
+
+Team - Team or teams that the player has played for. Not displayed when filtering for specific teams.
+
+Position - Position or positions that the player has been listed as playing by the NHL.
+
+GP - Games played.
+
+TOI - Total amount of time played.
+
+Corsi - Any shot attempt (goals, shots on net, misses and blocks) outside of the shootout. Referred to as SAT by the NHL.
+
+CF - Count of Corsi for that player's team while that player is on the ice.
+
+CA - Count of Corsi against that player's team while that player is on the ice.
+
+CF\% - Percentage of total Corsi while that player is on the ice that are for that player's team. CF*100/(CF+CA)
+
+Fenwick - any unblocked shot attempt (goals, shots on net and misses) outside of the shootout. Referred to as USAT by the NHL.
+
+FF - Count of Fenwick for that player's team while that player is on the ice.
+
+FA - Count of Fenwick against that player's team while that player is on the ice.
+
+FF\% - Percentage of total Fenwick while that player is on the ice that are for that player's team. FF*100/(FF+FA)
+
+Shots - any shot attempt on net (goals and shots on net) outside of the shootout.
+
+SF - Count of Shots for that player's team while that player is on the ice.
+
+SA - Count of Shots against that player's team while that player is on the ice.
+
+SF\% - Percentage of total Shots while that player is on the ice that are for that player's team. SF*100/(SF+SA)
+
+Goals - any goal, outside of the shootout.
+
+GF - Count of Goals for that player's team while that player is on the ice.
+
+GA - Count of Goals against that player's team while that player is on the ice.
+
+GF\% - Percentage of total Goals while that player is on the ice that are for that player's team. GF*100/(GF+GA)
+
+Scoring Chances - a scoring chance, as originally defined by War-on-Ice
+
+SCF - Count of Scoring Chances for that player's team while that player is on the ice.
+
+SCA - Count of Scoring Chances against that player's team while that player is on the ice.
+
+SCF\% - Percentage of total Scoring Chances while that player is on the ice that are for that player's team. SCF*100/(SCF+SCA)
+
+High Danger Scoring Chances - a scoring chance with a score of 3 or higher.
+
+HDCF - Count of High Danger Scoring Chances for that player's team while that player is on the ice.
+
+HDCA - Count of High Danger Scoring Chances against that player's team while that player is on the ice.
+
+HDCF\% - Percentage of total High Danger Scoring Chances while that player is on the ice that are for that player's team. HDCF*100/(HDCF+HDCA)
+
+High Danger Goals - goals generated from High Danger Scoring Chances
+
+HDGF - Count of Goals off of High Danger Scoring Chances for that player's team while that player is on the ice.
+
+HDGA - Count of Goals off of High Danger Scoring Chances against that player's team while that player is on the ice.
+
+HDGF\% - Percentage of High Danger Goals while that player is on the ice that are for that player's team. HDGF*100/(HDGF+HDGA)
+
+Medium Danger Scoring Chances - a scoring chance with a score of exactly 2.
+
+MDCF - Count of Medium Danger Scoring Chances for that player's team while that player is on the ice.
+
+MDCA - Count of Medium Danger Scoring Chances against that player's team while that player is on the ice.
+
+MDCF\% - Percentage of total Medium Danger Scoring Chances while that player is on the ice that are for that player's team. MDCF*100/(MDCF+MDCA)
+
+Medium Danger Goals - goals generated from Medium Danger Scoring Chances
+
+MDGF - Count of Goals off of Medium Danger Scoring Chances for that player's team while that player is on the ice.
+
+MDGA - Count of Goals off of Medium Danger Scoring Chances against that player's team while that player is on the ice.
+
+MDGF\% - Percentage of Medium Danger Goals while that player is on the ice that are for that player's team. MDGF*100/(MDGF+MDGA)
+
+Low Danger Scoring Chances - a scoring chance with a score of 1 or less. Does not include any attempts from the attacking team's neutral or defensive zone.
+
+LDCF - Count of Low Danger Scoring Chances for that player's team while that player is on the ice.
+
+LDCA - Count of Low Danger Scoring Chances against that player's team while that player is on the ice.
+
+LDCF\% - Percentage of total Low Danger Scoring Chances while that player is on the ice that are for that player's team. LDCF*100/(LDCF+LDCA)
+
+Low Danger Goals - goals generated from Low Danger Scoring Chances
+
+LDGF - Count of Goals off of Low Danger Scoring Chances for that player's team while that player is on the ice.
+
+LDGA - Count of Goals off of Low Danger Scoring Chances against that player's team while that player is on the ice.
+
+LDGF\% - Percentage of Low Danger Goals while that player is on the ice that are for that player's team. LDGF*100/(LDGF+LDGA)
+
+PDO
+
+SH\% - Percentage of Shots for that player's team while that player is on the ice that were Goals. GF*100/SF
+
+SV\% - Percentage of Shots against that player's team while that player is on the ice that were not Goals. GA*100/SA
+
+PDO - Shooting percentage plus save percentage. (GF/SF)+(GA/SA)
+
+Starts
+
+Off. Zone Starts - Number of shifts for the player that started with an offensive zone faceoff.
+
+Neu. Zone Starts - Number of shifts for the player that started with an neutral zone faceoff.
+
+Def. Zone Starts - Number of shifts for the player that started with an defensive zone faceoff.
+
+On The Fly Starts - Number of shifts for the player that started during play (without a faceoff).
+
+Off. Zone Start \% - Percentage of starts for the player that were Offensive Zone Starts, excluding Neutral Zone and On The Fly Starts. Off. Zone Starts*100/(Off. Zone Starts+Def. Zone Starts)
+
+Faceoffs
+
+Off. Zone Faceoffs - Number of faceoffs in the offensive zone for which the player was on the ice.
+
+Neu. Zone Faceoffs - Number of faceoffs in the neutral zone for which the player was on the ice.
+
+Def. Zone Faceoffs - Number of faceoffs in the defensive zone for which the player was on the ice.
+
+Off. Zone Faceoff \% - Percentage of faceoffs in the offensive zone for which the player was on the ice, excluding neutral zone faceoffs. Off. Zone Faceoffs*100/(Off. Zone Faceoffs+Def. Zone Faceoffs)
+
 
 \section{Methods}
 \label{sec:meth}
