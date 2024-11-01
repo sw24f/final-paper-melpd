@@ -110,9 +110,10 @@ Use this section to describe the data that helps to answer your research
 questions.
 
 The data used to perform this analysis was collected from Natural Stat Trick and the NHL website. The observations in the data
-is from all players that played in the National Hockey League from the 2021-2022, 2022-2023, and 2023-2024 seasons. The columns
-of the dataset will be combined from the two data sources. The following is a description of each of the columns in the dataset
-obtained from the Natural Stat Trick website:
+is from all players that played in the National Hockey League from the 2021-2022, 2022-2023, and 2023-2024 seasons. Only players
+that have played in over 25 games were used in the analysis. This is ensure that the players being evaluated were all of similar 
+calliber and were regular NHL players. The columns of the dataset will be combined from the two data sources. The following is a 
+description of each of the columns in the dataset obtained from the Natural Stat Trick website:
 
 Player - Player name.
 
@@ -242,51 +243,90 @@ Def. Zone Faceoffs - Number of faceoffs in the defensive zone for which the play
 
 Off. Zone Faceoff \% - Percentage of faceoffs in the offensive zone for which the player was on the ice, excluding neutral zone faceoffs. Off. Zone Faceoffs*100/(Off. Zone Faceoffs+Def. Zone Faceoffs)
 
+The goal of this dataset was to provide a broader scope of variables that evaluate a players performance. By introducing more
+advanced and uncovential statistics, there are more factors to consider in evaluating a player's effectiveness on the ice.
+
 
 \section{Methods}
 \label{sec:meth}
 
 Use this section to present the methodologies that will generate results by
-analyzing the data. Suppose that the radius of a circle is $r$. Then its area is
-\begin{equation}
-  \label{eq:area}
-  \pi r^2.
-\end{equation}
+analyzing the data. 
 
-Equation~\eqref{eq:area} is interesting. \lipsum[1-4]
+The main issue with the data is the violation of independence. This can be seen by creating a confusion matrix of the some 
+of the more basic nhl statistics. 
 
-Sometimes I don't want an equation to be numbered such as this one:
-\[
-  f(x) = \frac{1}{\sqrt{2\pi}} \exp\left( - \frac{x^2}{2} \right),
-\]
-which is the density of a standard normal variable.
+\begin{table}[h!]
+  \centering
+  \caption{Correlation Matrix of Variables}
+  \input{correlation_matrix.tex}
+  \label{tab:correlation_matrix}
+\end{table}
 
+
+There is a high correlation between different shot related statistics and point related statistics. For example, there is a 
+0.826371 correlation between Goals and Shots. This makes since because in order to score a goal, the player needs to shoot first.
+Correlation analysis can be used to identify the strength and direction of the relationship between various advanced metrics and 
+the plus/minus statistic. This was done by calculating the correlation coefficient between +/- and each metric (like CF\%, GF\%, SCF\%, etc.).
+The correlation values, ranging from -1 to 1, tell us how closely each metric aligns with the plus/minus. Higher positive correlations 
+(e.g., with GF\% and PDO) indicate metrics that vary similarly to plus/minus, suggesting that they may capture overlapping aspects of 
+offensive or defensive performance.
+
+Due to the presence of correlation among variables, ridge regression was performed in order to identify how plus/minus can be employed 
+to assess offensive and defensive contribution. It was also used to determine if other advanced metrics Corsi or Fenwick have the same, 
+better, or worse predictive abilities compared to plus-minus. Ridge regression, a form of linear regression, is valuable when dealing 
+with datasets with multicollinearity, where predictor variables have some sort of relationship with one another. This applies to hockey metrics 
+like Corsi, Fenwick, scoring chances, etc. since these stats often interact or overlap in measuring aspects of performance.
+
+Coupled with ridge regression, cross validation was utilized to assess the predictive power of different groups of variables (offensive, 
+defensive, possession-based) on the plus/minus statistic. Cross-validation splits the data into training and testing sets multiple times, 
+computing a model's predictive accuracy each time. In this case, the data was split into five subsets. In each iteration, one subset was
+kept as the test set and the other four were used to train the ridge regression model. The R-sqared value was reported for each iteration
+to measure how well offensive, defensive, and possession-based metrics (like Corsi and Fenwick) predict plus/minus.
+
+In order to separate individual contributions to plus/minus from team-level effects, a mixed-effects model was used. Mixed-effects models 
+allow for random effects, capturing variability at the team level, while fixed effects capture individual-level metrics. Individual metrics 
+like CF\%, GF\%, and others were included that directly measure a player's on-ice performance. The model considered team-level averages 
+(e.g., TeamMeanGF\%), accounting for how a player’s team context might influence their plus/minus.
 
 
 \section{Results}
 \label{sec:resu}
 
-Table~\ref{tab:rv} summarizes some example draws from some distributions.
-\lipsum[1-4]
+Correlation with Plus/Minus (+/-):
+
+Metrics such as GF\%, SF\%, PDO, xGF\%, and HDGF\% show a relatively strong correlation with plus/minus, which aligns with 
+expectations since these metrics also track goal-related contributions. 
+
+Cross-Validation Scores:
+
+Offensive/Defensive Combined: Averages around 0.53, indicating that these metrics explain a moderate proportion of the variance in plus/minus.
+Offensive Only: Cross-validation scores are around 0.63, suggesting that offensive metrics alone are somewhat predictive of plus/minus, 
+reflecting the offensive impact.
+Defensive Only: With higher scores around 0.71, defensive metrics seem to have a greater influence on the plus/minus, which aligns with 
+the role of plus/minus in capturing defensive contributions.
+Corsi and Fenwick: Both show very high cross-validation scores, with Fenwick performing slightly better, indicating that these 
+possession-based metrics are strong predictors.
+
+Mixed Effects Model:
+
+The significant coefficients for both GF\% and team averages, negative for TeamMeanCF\% and positive for TeamMeanGF\%, imply that 
+team-level factors substantially impact individual plus/minus scores.
+This aligns with the idea that plus/minus is both a team and individual statistic, as team-level scoring factors are significant predictors.
 
 \begin{table}[tbp]
-  \caption{This is my first table.}
+  \caption{Cross Validation Scores}
   \label{tab:rv}
 \centering
 \begin{tabular}{rrr}
   \toprule
-normal & poisson & gamma \\ 
+Both & Offensive & Defensive \\ 
   \midrule
--0.110 & 4 & 2.401 \\ 
-  0.116 & 4 & 3.529 \\ 
-  -0.828 & 9 & 2.112 \\ 
-  -0.066 & 6 & 11.104 \\ 
-  0.219 & 3 & 4.815 \\ 
-  0.303 & 5 & 2.188 \\ 
-  0.544 & 0 & 8.050 \\ 
-  -2.617 & 8 & 3.646 \\ 
-  0.747 & 1 & 5.178 \\ 
-  -1.103 & 4 & 3.043 \\ 
+  0.56777061 & 0.64692431 & 0.73265605 \\ 
+  0.51687324 & 0.62667921 & 0.70862251 \\ 
+  0.49576518 & 0.62263538 & 0.69467537 \\ 
+  0.49576518 & 0.58484799 & 0.65315835 \\ 
+  0.61054685 & 0.69145036 & 0.76239753 \\ 
    \bottomrule
 \end{tabular}
 \end{table}
@@ -301,8 +341,7 @@ What are the limitations of this study?
 
 What are worth pursuing further in the future?
 
-\lipsum[1-2]
-Watch for prevalence of diabetes \citep{wild2004global}.
+
 
 \bibliography{refs}
 \bibliographystyle{mcap}
