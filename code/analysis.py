@@ -10,9 +10,6 @@ nhl = nhl[nhl['GP_x'] > 25]
 nhl_edge_numeric = nhl_edge.select_dtypes(include=['number'])
 correlation_matrix = nhl_edge_numeric.corr()
 #print(correlation_matrix)
-with open("correlation_matrix.tex", "w") as file:
-    file.write(correlation_matrix.to_latex())
-
 
 import matplotlib.pyplot as plt
 """
@@ -38,7 +35,7 @@ from sklearn.preprocessing import StandardScaler
 # Define target and features (Offensive vs. Defensive)
 # Offensive variables: CF, FF, SF, GF, SCF, HDCF, HDGF, GF%, G, A, P/GP, CF%, SCF%, On-Ice SH%
 # Defensive variables: CA, FA, SA, GA, SCF, HDCA, HDGA, On-Ice SV%
-X = nhl[['GF%', 'SCF%', 'HDCF%', 'PDO', 'On-Ice SH%', 'On-Ice SV%']]
+X = nhl[['GF%', 'SCF%', 'HDCF%', 'PDO', 'CF%', 'HDGF%', 'FF%']]
 y = nhl['+/-']  # Plus/minus as the target variable
 
 # Scale the features for Ridge Regression
