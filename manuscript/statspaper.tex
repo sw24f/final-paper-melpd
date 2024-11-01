@@ -104,14 +104,11 @@ A discussion concludes in Section~\ref{sec:disc}.
 \section{Data}
 \label{sec:data}
 
-Use this section to describe the data that helps to answer your research
-questions.
-
 The data used to perform this analysis was collected from Natural Stat Trick and the NHL website. The observations in the data
 is from all players that played in the National Hockey League from the 2021-2022, 2022-2023, and 2023-2024 seasons. Only players
 that have played in over 25 games were used in the analysis. This is ensure that the players being evaluated were all of similar 
 calliber and were regular NHL players. The columns of the dataset will be combined from the two data sources. The following is a 
-description of each of the columns in the dataset obtained from the Natural Stat Trick website:
+description of each of the columns in the dataset obtained from the Natural Stat Trick website \cite{natural_stat_trick}:
 
 Player - Player name.
 
@@ -219,27 +216,10 @@ SV\% - Percentage of Shots against that player's team while that player is on th
 
 PDO - Shooting percentage plus save percentage. (GF/SF)+(GA/SA)
 
-Starts
+SH\% - Percentage of Shots for that player's team while that player is on the ice that were Goals. GF*100/SF
 
-Off. Zone Starts - Number of shifts for the player that started with an offensive zone faceoff.
+SV\% - Percentage of Shots against that player's team while that player is on the ice that were not Goals. GA*100/SA
 
-Neu. Zone Starts - Number of shifts for the player that started with an neutral zone faceoff.
-
-Def. Zone Starts - Number of shifts for the player that started with an defensive zone faceoff.
-
-On The Fly Starts - Number of shifts for the player that started during play (without a faceoff).
-
-Off. Zone Start \% - Percentage of starts for the player that were Offensive Zone Starts, excluding Neutral Zone and On The Fly Starts. Off. Zone Starts*100/(Off. Zone Starts+Def. Zone Starts)
-
-Faceoffs
-
-Off. Zone Faceoffs - Number of faceoffs in the offensive zone for which the player was on the ice.
-
-Neu. Zone Faceoffs - Number of faceoffs in the neutral zone for which the player was on the ice.
-
-Def. Zone Faceoffs - Number of faceoffs in the defensive zone for which the player was on the ice.
-
-Off. Zone Faceoff \% - Percentage of faceoffs in the offensive zone for which the player was on the ice, excluding neutral zone faceoffs. Off. Zone Faceoffs*100/(Off. Zone Faceoffs+Def. Zone Faceoffs)
 
 The goal of this dataset was to provide a broader scope of variables that evaluate a players performance. By introducing more
 advanced and uncovential statistics, there are more factors to consider in evaluating a player's effectiveness on the ice.
@@ -247,9 +227,6 @@ advanced and uncovential statistics, there are more factors to consider in evalu
 
 \section{Methods}
 \label{sec:meth}
-
-Use this section to present the methodologies that will generate results by
-analyzing the data. 
 
 \subsection{Correlation Analysis}
 The main issue with the data is multicollinearity, where independent variables are highly correlated. A correlation matrix was created 
@@ -261,6 +238,7 @@ with some of the more basic nhl statistics to highlight this issue, shown in Tab
   \input{correlation_matrix.tex}
   \label{tab:correlation_matrix}
 \end{table}
+
 
 There is a high correlation between different shot related statistics and point related statistics. For example, there is a 
 0.826371 correlation between Goals and Shots. This makes since because in order to score a goal, the player needs to shoot first.
@@ -282,6 +260,7 @@ applies to hockey metrics like Corsi, Fenwick, scoring chances, etc. since these
 of performance.
 
 \subsection{Cross-Validation}
+
 Coupled with ridge regression, cross validation was utilized to assess the predictive power of different groups of variables (offensive, 
 defensive, possession-based) on the plus/minus statistic. Cross-validation splits the data into training and testing sets multiple times, 
 computing a model's predictive accuracy each time. In this case, the data was split into five subsets. In each iteration, one subset was
@@ -290,104 +269,115 @@ to measure how well offensive, defensive, and possession-based metrics (like Cor
 that the model’s performance is consistent across different data partitions.
 
 \subsection{Mixed Model Effects}
-In order to separate individual contributions to plus/minus from team-level effects, a mixed-effects model was used. Mixed-effects models 
-allow for random effects, capturing variability at the team level, while fixed effects capture individual-level metrics. Individual metrics 
-like CF\%, GF\%, and others were included that directly measure a player's on-ice performance. The model considered team-level averages 
-(e.g., TeamMeanGF\%), accounting for how a player’s team context might influence their plus/minus.
+
+In order to separate individual contributions to plus/minus from team-level effects, a mixed-effects model was used. 
+The mixed-effects model combines:
+\begin{itemize}
+    \item \textbf{Fixed Effects}, which capture the influence of player-specific variables that directly relate to individual performance, 
+    such as Corsi For Percentage (CF\%), Goals For Percentage (GF\%), and other advanced metrics.
+    \item \textbf{Random Effects}, which account for variability at the team level, recognizing that a player’s plus/minus statistic can be 
+    influenced by the overall performance and style of their team. Including team-level random effects helps control for unobserved team 
+    factors that may affect each player similarly.
+\end{itemize}
+
+To apply this model, individual metrics that describe on-ice performance (e.g., CF\%, GF\%) were used as fixed effects to estimate each player’s 
+contribution to plus/minus. At the same time, team-level averages (e.g., TeamMeanCF\%, TeamMeanGF\%) were included as random effects. This 
+approach distinguishes how much of a player's plus/minus statistic is attributable to their own performance versus the performance of their team.
+By using this mixed-effects approach, we can assess to what extent the plus/minus statistic reflects individual skill as opposed to team 
+strength, thus helping clarify if plus/minus can serve as a reliable individual performance measure. 
 
 
 \section{Results}
 \label{sec:resu}
 
-The results of taking the correlation coefficients of plus-minus versus every other column is as follows:
+The results of the correlation analysis and statistical modeling of plus-minus reveal several insights into how this statistic reflects 
+both individual and team-level contributions.
+
+\subsection{Correlation Analysis}
+
+The initial analysis involved calculating the correlation coefficients between plus-minus and various performance metrics. The correlation 
+coefficients are displayed in Table \ref{tab:rv}.
 
 
 \begin{table}[tbp]
-  \caption{Cross Validation Scores}
+  \caption{Correlation Coefficients with Plus-Minus}
   \label{tab:rv}
 \centering
-\begin{tabular}{rrr}
+\begin{tabular}{rr}
   \toprule
 Variable & Correlation Coefficient \\ 
   \midrule
-  GP & 0.232144
-  G & 0.237058
-  A & 0.342538
-  P & 0.314842
-  +/- & 1.000000
-  P/GP & 0.277666
-  EVG & 0.239076
-  EVP & 0.336372
-  PPG & 0.187284
-  PPP & 0.226803
-  SHG & 0.177479
-  SHP & 0.282570
-  OTG & 0.161693
-  GWG & 0.305998
-  S & 0.255841
-  S\% & 0.048282
-  TOI/GP & 0.253234
-  TOI & 0.291711
-  CF & 0.369200
-  CA & 0.210752
-  CF\% & 0.533927
-  FF & 0.373707
-  FA & 0.213121
-  FF\% & 0.553993
-  SF & 0.376144
-  SA & 0.211659
-  SF\% & 0.568873
-  GF & 0.423772
-  GA & 0.083042
-  GF\% & 0.705010
-  xGF & 0.386643
-  xGA & 0.195763
-  xGF\% & 0.585988
-  SCF & 0.387204
-  SCA & 0.191645
-  SCF\% & 0.585252
-  HDCF & 0.399467
-  HDCA & 0.195659
-  HDCF\% & 0.551392
-  HDGF & 0.442448
-  HDGA & 0.092987
-  HDGF\% & 0.614221
-  On-Ice SH\% & 0.324061
-  On-Ice SV\% & 0.419340
-  PDO & 0.546471
-  Off. Zone Starts & 0.309539
-  Neu. Zone Starts & 0.294922
-  Def. Zone Starts & 0.236777
-  On The Fly Starts & 0.273141
-  Off. Zone Start \% & 0.110750
-  Off. Zone Faceoffs & 0.353819
-  Neu. Zone Faceoffs & 0.314974
-  Def. Zone Faceoffs & 0.262650
-  Off. Zone Faceoff \% & 0.182999
+  GP & 0.232 \\ 
+  G & 0.237 \\ 
+  A & 0.343 \\ 
+  P & 0.315 \\ 
+  +/- & 1.000 \\ 
+  P/GP & 0.278 \\ 
+  EVG & 0.239 \\ 
+  EVP & 0.336 \\ 
+  PPG & 0.187 \\ 
+  PPP & 0.227 \\ 
+  SHG & 0.177 \\ 
+  SHP & 0.283 \\ 
+  OTG & 0.162 \\ 
+  GWG & 0.306 \\ 
+  S & 0.256 \\ 
+  S\% & 0.048 \\ 
+  TOI/GP & 0.253 \\ 
+  TOI & 0.292 \\ 
+  CF & 0.369 \\ 
+  CA & 0.211 \\ 
+  CF\% & 0.534 \\ 
+  FF & 0.374 \\ 
+  FA & 0.213 \\ 
+  FF\% & 0.554 \\ 
+  SF & 0.376 \\ 
+  SA & 0.212 \\ 
+  SF\% & 0.569 \\ 
+  GF & 0.424 \\ 
+  GA & 0.083 \\ 
+  GF\% & 0.705 \\ 
+  xGF & 0.387 \\ 
+  xGA & 0.196 \\ 
+  xGF\% & 0.586 \\ 
+  SCF & 0.387 \\ 
+  SCA & 0.192 \\ 
+  SCF\% & 0.585 \\ 
+  HDCF & 0.399 \\ 
+  HDCA & 0.196 \\ 
+  HDCF\% & 0.551 \\ 
+  HDGF & 0.442 \\ 
+  HDGA & 0.093 \\ 
+  HDGF\% & 0.614 \\ 
+  On-Ice SH\% & 0.324 \\ 
+  On-Ice SV\% & 0.419 \\ 
+  PDO & 0.546 \\ 
+  Off. Zone Starts & 0.310 \\ 
+  Neu. Zone Starts & 0.295 \\ 
+  Def. Zone Starts & 0.237 \\ 
+  On The Fly Starts & 0.273 \\ 
+  Off. Zone Start \% & 0.111 \\ 
+  Off. Zone Faceoffs & 0.354 \\ 
+  Neu. Zone Faceoffs & 0.315 \\ 
+  Def. Zone Faceoffs & 0.263 \\ 
+  Off. Zone Faceoff \% & 0.183 \\ 
   \bottomrule
 \end{tabular}
 \end{table}
 
-Metrics such as GF\%, FF\%, SF\%, PDO, xGF\%, and HDGF\% show a relatively strong correlation with plus/minus (0.705010, 0.553993, 0.568873, 
-0.546471, 0.585988, 0.614221 respectively), which aligns with expectations since many of these metrics also track goal-related contributions. 
-Higher positive correlations indicate metrics that vary similarly to plus/minus, suggesting that they may capture overlapping aspects of
-offensive or defensive performance.
 
+Metrics such as GF\%, FF\%, SF\%, PDO, xGF\%, and HDGF\% show moderate to strong positive correlations with plus-minus (0.705, 0.554, 
+0.569, 0.546, 0.586, and 0.614, respectively). This result aligns with expectations, as many of these metrics are related to goal-scoring 
+chances and shot control, which contribute directly to team scoring and subsequently affect plus-minus. Higher correlations among these 
+metrics indicate a similar variation pattern to plus-minus, suggesting that they capture overlapping aspects of a player's offensive and 
+defensive performance.
 
-Ridge regression was performed on three different sets of variables: combined metrics, offensive only, and defensive only. The combined
-metrics consisted of Goals For Percentage(GF\%), Scoring Chances Percentage (SF\%), High-Danger Chances while that player is on the ice (HDSC\%),
-combined shooting and save percentage (PDO), Percent of shots that were goals for (On-Ice SH\%), High-Danger Goals for while that player is 
-on the ice (HDGC\%). All of these metrics are similar to plus-minus in that they combine the defensive and offensive factors together.
-The offensive only metrics were CF, FF, SF, GF, SCF, HDCF, HDGF, GF\%, G, A, P/GP, CF\%, SCF\%, and On-Ice SH\%. The defensive only metrics were
-CA, FA, SA, GA, SCF, HDCA, HDGA, On-Ice SV\%. The results can be seen in the table below.
+\subsection{Ridge Regression Analysis of Offensive and Defensive Contributions}
 
-Offensive/Defensive Combined: Averages around 0.53, indicating that these metrics explain a moderate proportion of the variance in plus/minus.
-Offensive Only: Cross-validation scores are around 0.63, suggesting that offensive metrics alone are somewhat predictive of plus/minus, 
-reflecting the offensive impact.
-Defensive Only: With higher scores around 0.71, defensive metrics seem to have a greater influence on the plus/minus, which aligns with 
-the role of plus/minus in capturing defensive contributions.
-Corsi and Fenwick: Both show very high cross-validation scores, with Fenwick performing slightly better, indicating that these 
-possession-based metrics are strong predictors.
+Ridge regression was performed on three different sets of variables: combined metrics, offensive only, and defensive only. The combined 
+metrics included GF\%, SF\%, HDSC\%, PDO, On-Ice SH\%, and HDGF\%, metrics that combine both offensive and defensive factors, similar to 
+plus-minus.The offensive only metrics were CF, FF, SF, GF, SCF, HDCF, HDGF, GF\%, G, A, P/GP, CF\%, SCF\%, and On-Ice SH\%. The defensive 
+only metrics were CA, FA, SA, GA, SCF, HDCA, HDGA, On-Ice SV\%. The results can be seen in the table below.
 
 \begin{table}[tbp]
   \caption{Cross Validation Scores}
@@ -406,14 +396,50 @@ Both & Offensive & Defensive \\
 \end{tabular}
 \end{table}
 
+The results in Table \ref{tab:rv} reveal:
+- **Combined Metrics**: A moderate cross-validation score around 0.53 suggests that these metrics explain a moderate amount of variance 
+in plus-minus.
+- **Offensive Metrics**: With an average score of 0.63, offensive metrics are predictive of plus-minus to a certain extent, indicating 
+the offensive contributions captured by plus-minus.
+- **Defensive Metrics**: The highest average score (around 0.71) suggests that defensive metrics have a more substantial impact on 
+plus-minus, aligning with the fact that plus-minus also reflects defensive contributions.
+
 Mixed Effects Model:
 
+The results of the mixed effects model can be summarized in the table.
 
-The significant coefficients for both GF\% and team averages, negative for TeamMeanCF\% and positive for TeamMeanGF\%, imply that 
-team-level factors substantially impact individual plus/minus scores.
-This aligns with the idea that plus/minus is both a team and individual statistic, as team-level scoring factors are significant predictors.
+\begin{table}[tbp]
+  \caption{Mixed Effects Model Results for Plus-Minus Prediction}
+  \label{tab:mixed-effects}
+  \centering
+  \begin{tabular}{lrr}
+    \toprule
+    Predictor & Coefficient & Significance \\ 
+    \midrule
+    GF\% & 1.950 & 0.000 \\
+    CF\% & 0.313 & 0.345 \\ 
+    Team Mean CF\% & -3.111 & 0.000 \\ 
+    Team Mean GF\% & 0.846 & 0.000 \\ 
+    \bottomrule
+\end{tabular}
+\end{table}
 
-Plus-Minus vs Corsi vs Fenwick
+The coefficient for individual Corse For percentage is a small, positive effect on plus/minus, though it is not statistically significant 
+(p = 0.345). This suggests that while Corsi percentage (CF\%) has a slight positive association with plus/minus, it may not have a 
+substantial or reliable impact on explaining variance in plus/minus at the individual level. The positive and highly significant 
+coefficient for individual GF\% (p < 0.001) indicates a strong and reliable positive relationship between goals-for percentage and plus/minus. 
+Players with a higher individual GF\% are likely to have a higher plus/minus score, suggesting that goal-scoring and offensive contribution 
+are important for explaining plus/minus. The coefficent for Team Mean CF\% negative, statistically significant coefficient (p < 0.001) 
+indicates that the team’s mean CF\% negatively impacts individual plus/minus. In teams with higher Corsi percentages, individual players 
+might have lower plus/minus scores, possibly due to the distribution of possession-based contributions across the team. The positive 
+coefficient of Team Mean GF\%, significant at p < 0.01, confirms that team-level GF\% positively influences individual plus/minus. This 
+suggests that players benefit from being on teams that are generally good at scoring, supporting the notion that plus/minus partially 
+reflects team-level offensive strength. These results highlight that plus/minus is significantly influenced by both individual offensive 
+performance (e.g., GF\%) and team-level scoring success (e.g., Team Mean GF\%), while possession metrics like CF\% are less predictive of 
+plus/minus, especially at the individual level.
+
+
+\subsection{Plus-Minus vs Corsi vs Fenwick}
 
 Both Corsi and Fenwick were used as predictors in ridge regression with the variables GF\%, SCF\%, HDCF\%, PDO, On-Ice SH\%, On-Ice SV\%, G, A.
 The results of the cross validation are shown in the table below
@@ -442,12 +468,18 @@ that both Corsi and Fenwick are significantly better at predicting player effect
 \section{Discussion}
 \label{sec:disc}
 
-What are the main contributions again?
+Like the plus-minus statistic, this project does not come without its limitations. This analysis relies on specific datasets from 
+Natural Stat Trick and includes only a selection of individual and team-based metrics. Other relevant factors like zone entries, exits, or 
+additional situational metrics might provide further insights into player contributions but were not available in this dataset. The model 
+does not capture all nuances of game context, such as player fatigue, line changes, and shifts against specific opponents, which can all 
+influence a player’s plus/minus. The mixed-effects model approximates some of these factors with team-level random effects, but a more 
+complex model might be required for a comprehensive understanding.
 
-What are the limitations of this study?
-
-What are worth pursuing further in the future?
-
+In this paper, the effectiveness of the plus-minus statistic was evaluated to see if it is an effective predictor of player contribution
+in the National Hockey League. The plus minus does have some value as a predictor of offensive and defensive metrics. However, other
+advanced metrics like Corsi and Fenwick perform much better. The plus-minus is also heavily influenced by a player's team, making it 
+less valuable as an indivual evaluator of player effectiveness. Overall, the NHL should maybe consider phasing out the use of the plus-minus
+statistic and consider more advanced metrics such as Corsi or Fenwick.
 
 
 \bibliography{refs}
