@@ -1,0 +1,98 @@
+\documentclass[12pt]{article}
+
+%% preamble: Keep it clean; only include those you need
+\usepackage{amsmath}
+\usepackage[margin = 1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{natbib}
+
+% for space filling
+\usepackage{lipsum}
+% highlighting hyper links
+\usepackage[colorlinks=true, citecolor=blue]{hyperref}
+
+
+%% meta data
+
+\title{Proposal: An Analysis of Hockey's Most Controversial Statistic}
+\author{Melanie Desroches\\
+  Department of Statistics\\
+  University of Connecticut
+}
+
+\begin{document}
+\maketitle
+
+
+\paragraph{Introduction}
+In ice hockey, a very common yet controversial statistic that is reported is the plus/minus statistic. It measures a player's impact 
+by calculating the difference between the even strength goals their team scores and concedes while they are on the ice. This metric
+aims to reflect whether a player contributes positively or negatively to the game However, the plus/minus has significant of drawbacks. 
+According to Brian MacDonald "The traditional plus-minus statistic in hockey is highly dependent on a player’s teammates and opponents" 
+\cite{Macdonald_2011}. Hockey players typically play in fixed "lines" where the same group of forwards and defensemen are on the ice 
+together. This makes plus/minus heavily influenced by a player's linemates rather than their individual performance. As a result, many
+argue that the statistic functions more as a reflection of team dynamics than as a precise indicator of individual contribution. 
+Furthermore, numerous confounding variables, such as the quality of the opponent and situational factors, make the calculation less 
+reliable. Alternatives to the plus/minus statistic have been developed, such as Corsi or Fenwick. Understanding the limitations and
+potential of plus/minus can help coaches, analysts, and fans better interpret player data. While advanced statistics are valuable, 
+plus/minus is still popular, especially among casual fans. This project explores whether the plus/minus still holds relevance or 
+whether it should be supplemented or replaced with other metrics.
+
+
+\paragraph{Specific Aims}
+The goal of this project is to evaluate the effectiveness of the plus/minus statistic. One of the topics of discussion is if the 
+plus/minus statistic can be used to determine how good a player is both on offense and defense. I also want to see if the plus/minus 
+has any validity being used as an individual statistic or as a team statistic. Based on my observations, I will compare the plus/minus 
+statistic to other statistics that have a similar purpose such as CORSI or Fenwick. These questions are critical as plus/minus is used 
+in scouting and analysis, but its reliability has been debated. By comparing it with modern metrics, I aim to shed light on its true 
+value in player evaluation.
+
+
+
+\paragraph{Data}
+
+I am utilizing data from the National Hockey League (NHL), sourced from websites like Natural Stat Trick and NHLEdge.
+The data will be collected from the 2021-2022, 2022-2023, and 2023-2024 seasons. I am particularly interested in the advanced hockey 
+statistics that are collected for each player in the NHL. These advanced metrics include Corsi, Fenwick, high-danger chances, shooting 
+percentages, and other performance indicators. Additionally, the dataset features traditional statistics such as points, 
+goals, assists, plus/minus, and time on ice, providing a comprehensive view of player performance across multiple seasons.
+
+
+
+\paragraph{Research Design and Methods}
+This study will evaluate the effectiveness of the plus/minus statistic in ice hockey to determine whether it can assess a 
+player's offensive or defensive contributions and if it should be treated as an individual or team statistic. The analysis 
+will also compare plus/minus with other advanced hockey metrics, such as Corsi and Fenwick, to assess its overall utility.
+The first step of the project is to collect all relevant data. In this case, I will be exporting the data from all players
+from the 2021- 2024 seasons into an Excel or csv file.  Following data collection, the next phase will involve data cleaning to 
+ensure accuracy and consistency. Once the dataset is prepared, initial analyses will identify correlations among variables 
+and pinpoint issues of collinearity, which could impact the selection of models and variables for further analysis.
+To evaluate how plus/minus can be employed to assess offensive and defensive contributions, I will implement ridge regression, 
+which is well-suited for handling collinearity concerns inherent in the plus/minus statistic, as 
+noted in prior research in \cite{Macdonald_2012}. The coefficients from the ridge regression model will reveal 
+whether offensive or defensive metrics contribute more to explaining plus/minus. I plan on using a similar method for comparing
+the plus/minus with other advanced statistics, replacing the offensive and defensive statistics with CORSI, Fenwick, and any other
+advanced statistics that are deemed relevant. When assessing if plus/minus is more influenced by individual performance or team 
+performance, I am considering using a mixed-effects ridge regression model. By using ridge regression with mixed-effects, it will 
+control for the potential influence of team quality on individual plus/minus values. This will help us determine how much of the 
+variability in plus/minus is explained by the team versus individual players.
+
+
+
+\paragraph{Discussion}
+The most challenging aspect of this project will be addressing collinearity, as many of the statistics involved are highly correlated. 
+To mitigate this issue, I plan to implement ridge regression models. According to Brian MacDonald in his ridge regression analysis 
+of the plus/minus, "Ridge regression frequently reduces the error bounds in the estimates and improves the predictive performance 
+of the model when collinearly exists in the data. Ridge regression introduces bias in the estimates, but the tradeoff is typically 
+worthwhile." \cite{Macdonald_2012}. Mixed-effects models, principal component analysis, or other models could be used if ridge regression 
+proves to be ineffective. I am also assuming that the data that I am collecting from Natural Stat Trick is reliable and accurate. While 
+Natural Stat Trick provides advanced metrics, the quality and completeness of the data may vary.  Therefore, I will be particularly diligent 
+in the data cleaning process to ensure that the variables of interest are available and consistent throughout the dataset. This 
+careful attention to detail will help enhance the resilience and reliability of the analysis and the validity of the results.
+
+
+\bibliography{../manuscript/refs}
+\bibliographystyle{chicago}
+
+\end{document}
