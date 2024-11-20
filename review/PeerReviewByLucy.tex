@@ -1,0 +1,87 @@
+\documentclass[a4paper,9pt]{scrartcl}
+\usepackage{amssymb, amsmath} % needed for math
+\usepackage[utf8]{inputenc}   % this is needed for umlauts
+\usepackage[USenglish]{babel} % this is needed for umlauts
+\usepackage[T1]{fontenc}      % this is needed for correct output of umlauts in pdf
+\usepackage[margin=2.5cm]{geometry} %layout
+\usepackage{hyperref}         % hyperlinks
+\usepackage{color}
+\usepackage{framed}
+\usepackage{enumerate}  % for advanced numbering of lists
+\usepackage{csquotes}   % for enquote
+
+\newcommand\titletext{Peer-Review of\\"Hockey’s Most Controversial Statistic: An Analysis of the Effectiveness of the Plus-Minus Statistic"}
+
+\title{\titletext}
+\author{Lucy Liu}
+
+\hypersetup{
+  pdfauthor   = {Martin Thoma},
+  pdfkeywords = {peer review},
+  pdftitle    = {Lineare Algebra}
+}
+
+\usepackage{microtype}
+
+\begin{document}
+\maketitle
+\section{Introduction}
+This is a peer-review of \enquote{Hockey’s Most Controversial Statistic: An Analysis of the Effectiveness of the Plus-Minus Statistic } by Melanie Desroches . The reviewed document
+is available under \href{https://github.com/sw24f/final-paper-melpd}{https://github.com/sw24f/final-paper-melpd}.
+
+\section{Summary of the Content}
+The paper assesses the validity of the plus-minus statistic in evaluating player contributions in the National Hockey League (NHL). It highlights potential limitations, such as multicollinearity with other metrics and team-level dependencies. Using various statistical approaches, including correlation analysis, ridge regression, cross-validation, and mixed-effects models, the study examines how plus-minus compares to alternative metrics like Corsi and Fenwick. The analysis concludes that plus-minus, while reflective of certain aspects of player performance, may be less effective than Corsi or Fenwick in evaluating individual contributions. This study is insightful, but greater clarity and methodological precision would improve the paper. 
+
+
+\section{Overall Feedback}
+While the paper provides an explanation of the plus-minus statistic, there are several places that could use more clarification. These include better organization of results, more detailed explanations of methodological choices, and clearer presentation of results and conclusions. The paper should also address minor inconsistencies in terminology and provide more guidance on the data sources used. 
+
+\section{Major Remarks}
+The literature review could be expanded to include additional studies that have examined the plus-minus statistic and its alternatives. This could provide a better foundation for the reasoning behind this study and highlight gaps that you hope to fill with your current research.
+
+\subsection{Introduction}
+Page 1. The paper evaluates the effectiveness of the plus-minus statistic compared to other metrics like Corsi and Fenwick. While the objectives are clear, the hypotheses are not explicitly stated. Clearly state the hypotheses at the end of the introduction.
+
+\subsection{Methods Section 3.1-3.4}
+Pages 6-9. Although each method is described individually, the reason behind selecting these specific methods (Ex. why ridge regression and not another regularization technique) is not fully explained. Add a brief justification for each method and explain why alternatives were not selected. 
+
+Additionally, clearly outline the assumptions associated with each statistical method and discuss how these assumptions are checked and addressed within the analysis. Include diagnostic tests and results that assess whether the assumptions of each statistical method are satisfied. For example, provide residual plots or normality tests for mixed-effects models. 
+ 
+
+\subsection{Discussion}
+Page 13.  The discussion section is missing future directions. Discuss what comes next after this study, or some possible new ideas or improvements to explore. Further elaborate on the implications of these findings for the NHL. 
+
+\section{Minor Remarks}
+
+\begin{itemize}
+    \item Line 196 remove \enquote{we}, paper is written by a single author. 
+    \item Terminology Consistency (Methods, Pages 6-9):
+    \begin{itemize}
+        \item Terms such as \enquote{multicollinearity}, \enquote{collinearity}, “collinearity,” \enquote{correlation} are used interchangeably but may confuse readers. Consistent use of terminology would improve clarity. 
+    \end{itemize}
+    \item Tables on page 7 and 10 are cut off, and could use captions
+    \item Asterisks are showing instead of bold text. Ex. Line 220. **Combined Metrics** 
+    \item References are sometimes not fully cited. Ex. Macdonald’s work mentioned without complete reference. 
+    \item typos
+    \begin{itemize}
+        \item Line 9: \enquote{valaue} should be \enquote{value}
+        \item Line 13: \enquote{refered} should be \enquote{referred}
+        \item Line 19: \enquote{it’s} should be \enquote{its}
+        \item Line 20: \enquote{independece} should be \enquote{independence}
+        \item Line 29: \enquote{colinearity} should be \enquote{collinearity}
+        \item Line 37: \enquote{truely} should be \enquote{truly}
+        \item Line 38: \enquote{hereforth} should be \enquote{henceforth}
+        \item Line 39: \enquote{preforming} should be \enquote{performing}
+        \item Line 50: \enquote{ensure} should be \enquote{to ensure}
+        \item Line 50: \enquote{calliber} should be \enquote{caliber}
+        \item Line 141: \enquote{uncovential} should be \enquote{unconventional}
+        \item Line 151: \enquote{makes since} should be \enquote{makes sense}
+        \item Line 177: \enquote{R-sqared} should be \enquote{R-squared}
+        \item Line 229: \enquote{Corse} should be \enquote{Corsi}
+        \item Line 236: \enquote{coefficient for Team Mean CF\% negative} should be \enquote{coefficient for Team Mean CF\% is negative}
+        \item Line 252: \enquote{notibly} should be \enquote{notably}
+        \item Line 269: \enquote{indivual} should be \enquote{individual} 
+    \end{itemize}
+\end{itemize}
+
+\end{document}
