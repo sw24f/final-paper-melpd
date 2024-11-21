@@ -70,27 +70,27 @@ less valuable as an indivual evaluator of player effectiveness.
 Within the realm of sports, many different statistics are used to determine how good a player is. This can include points,
 assists, time played, etc. But is there just one valaue that can be used to determine the effectiveness of a player? This is an 
 important topic, as fans, coaches, players, and general managers often want to get a better understanding of how an individual is
-impacting their team. It is one thing to watch the players to determine how good a player is, often refered to as the "eye test" but 
+impacting their team. It is one thing to watch the players to determine how good a player is, often referred to as the "eye test" but 
 with so many players, it is hard to quantify this. Enter the plus-minus statistic. Plus-minus is generally calculated by adding all the points
 scored by their team while they were playing and subtracting by points scored by the opposition while they were playing. The idea is that 
 if a player has a generally positive impact on their team, they will have a highly positive plus-minus. The two main sports where this
 statistic is used is basketball and ice hockey. 
 
-While the plus-minus statistic is a great idea in theory, it does not come without it's weaknesses. The biggest drawback to this
-statistic is its issues with independece. Take ice hockey for example. Many ice hockey players tend to play on "lines", meaning the same three 
+While the plus-minus statistic is a great idea in theory, it does not come without its weaknesses. The biggest drawback to this
+statistic is its issues with independence. Take ice hockey for example. Many ice hockey players tend to play on "lines", meaning the same three 
 forwards tend to play together and the same two defensemen usually play together. As a result, the performance of one player is highly dependent 
 on the performance of their linemates. In "A Regression-based Adjusted Plus-Minus Statistic for NHL Players" \cite{Macdonald_2011}, Brian
 MacDonald provides a perfect example of this with the Henrik and Daniel Sedin, Swedish twins who played together for the Vancouver Canucks. 
  \cite[Daniel spent 92\% of his playing time with Henrik, the highest percentage of any other player combination where both players have
-played over 700 minutes. Because of this high colinearity between the twins, it is difficult to separate the individual effect that each 
+played over 700 minutes. Because of this high collinearity between the twins, it is difficult to separate the individual effect that each 
 player has on the net goals scored on the ice.]{Macdonald_2012} Many critics of the plus-minus argue that plus-minus is more of a team 
 statistic, since it is heavily influenced by team dynamics rather than individual contributions. Furthermore, numerous confounding variables, 
 such as the quality of the opponent and situational factors, make the calculation less reliable. As a result of these criticisms, alternatives 
 to the plus-minus statistic have been developed, such as Corsi or Fenwick, which is calculated using shot attempts rather than goals.
 
-The goal of this project will be to shed light on this controversial statistic and determine if plus-minus is truely an effective predictor
-to individual contribution, specifically in the National Hockey League (hereforth refered to as the NHL). Is the plus-minus a good evaluator 
-of offensive and defensive output? Is the plus-minus more reflective of how well a player is doing than how well a player is preforming? 
+The goal of this project will be to shed light on this controversial statistic and determine if plus-minus is truly an effective predictor
+to individual contribution, specifically in the National Hockey League (henceforth refered to as the NHL). Is the plus-minus a good evaluator 
+of offensive and defensive output? Is the plus-minus more reflective of how well a player is doing than how well a player is performing? 
 Are there better alternatives to evaluating individual player contribution? These are the questions that will be answered from this analysis.
 
 
@@ -107,7 +107,7 @@ A discussion concludes in Section~\ref{sec:disc}.
 
 The data used to perform this analysis was collected from Natural Stat Trick and the NHL website. The observations in the data
 is from all players that played in the National Hockey League from the 2021-2022, 2022-2023, and 2023-2024 seasons. Only players
-that have played in over 25 games were used in the analysis. This is ensure that the players being evaluated were all of similar 
+that have played in over 25 games were used in the analysis. This is to ensure that the players being evaluated were all of similar 
 calliber and were regular NHL players. The columns of the dataset will be combined from the two data sources. The following is a 
 description of each of the columns in the dataset obtained from the website \cite{natural_stat_trick}:
 
@@ -223,7 +223,7 @@ SV\% - Percentage of Shots against that player's team while that player is on th
 
 
 The goal of this dataset was to provide a broader scope of variables that evaluate a players performance. By introducing more
-advanced and uncovential statistics, there are more factors to consider in evaluating a player's effectiveness on the ice.
+advanced and unconventional statistics, there are more factors to consider in evaluating a player's effectiveness on the ice.
 
 
 \section{Methods}
@@ -242,7 +242,7 @@ with some of the more basic nhl statistics to highlight this issue, shown in Tab
 
 
 There is a high correlation between different shot related statistics and point related statistics. For example, there is a 
-0.826371 correlation between Goals and Shots. This makes since because in order to score a goal, the player needs to shoot first.
+0.826371 correlation between Goals and Shots. This makes sense because in order to score a goal, the player needs to shoot first.
 Correlation analysis can be used to identify the strength and direction of the relationship between various advanced metrics and 
 the plus/minus statistic. Metrics with high positive correlations (e.g., GF\% and PDO) suggest a strong alignment with the plus/minus, 
 indicating that they may reflect similar aspects of offensive or defensive performance. This was done by calculating the correlation 
@@ -265,7 +265,7 @@ of performance.
 Coupled with ridge regression, cross validation was utilized to assess the predictive power of different groups of variables (offensive, 
 defensive, possession-based) on the plus/minus statistic. Cross-validation splits the data into training and testing sets multiple times, 
 computing a model's predictive accuracy each time. In this case, the data was split into five subsets. In each iteration, one subset was
-kept as the test set and the other four were used to train the ridge regression model. The R-sqared value was reported for each iteration
+kept as the test set and the other four were used to train the ridge regression model. The R-squared value was reported for each iteration
 to measure how well offensive, defensive, and possession-based metrics (like Corsi and Fenwick) predict plus/minus. This process ensures 
 that the model’s performance is consistent across different data partitions.
 
@@ -398,10 +398,13 @@ Both & Offensive & Defensive \\
 \end{table}
 
 The results in Table \ref{tab:rv} reveal:
+
 - **Combined Metrics**: A moderate cross-validation score around 0.53 suggests that these metrics explain a moderate amount of variance 
 in plus-minus.
+
 - **Offensive Metrics**: With an average score of 0.63, offensive metrics are predictive of plus-minus to a certain extent, indicating 
 the offensive contributions captured by plus-minus.
+
 - **Defensive Metrics**: The highest average score (around 0.71) suggests that defensive metrics have a more substantial impact on 
 plus-minus, aligning with the fact that plus-minus also reflects defensive contributions.
 
@@ -425,12 +428,12 @@ The results of the mixed effects model can be summarized in the table.
 \end{tabular}
 \end{table}
 
-The coefficient for individual Corse For percentage is a small, positive effect on plus/minus, though it is not statistically significant 
+The coefficient for individual Corsi For percentage is a small, positive effect on plus/minus, though it is not statistically significant 
 (p = 0.345). This suggests that while Corsi percentage (CF\%) has a slight positive association with plus/minus, it may not have a 
 substantial or reliable impact on explaining variance in plus/minus at the individual level. The positive and highly significant 
 coefficient for individual GF\% (p < 0.001) indicates a strong and reliable positive relationship between goals-for percentage and plus/minus. 
 Players with a higher individual GF\% are likely to have a higher plus/minus score, suggesting that goal-scoring and offensive contribution 
-are important for explaining plus/minus. The coefficent for Team Mean CF\% negative, statistically significant coefficient (p < 0.001) 
+are important for explaining plus/minus. The coefficent for Team Mean CF\% is negative, statistically significant coefficient (p < 0.001) 
 indicates that the team’s mean CF\% negatively impacts individual plus/minus. In teams with higher Corsi percentages, individual players 
 might have lower plus/minus scores, possibly due to the distribution of possession-based contributions across the team. The positive 
 coefficient of Team Mean GF\%, significant at p < 0.01, confirms that team-level GF\% positively influences individual plus/minus. This 
@@ -462,7 +465,7 @@ Corsi & Fenwick \\
 \end{tabular}
 \end{table}
 
-These values are notibly better that the cross validation scores for plus-minus, regardless of which set of predictors. This indicates
+These values are notably better that the cross validation scores for plus-minus, regardless of which set of predictors. This indicates
 that both Corsi and Fenwick are significantly better at predicting player effectiveness than plus-minus.
 
 
@@ -479,7 +482,7 @@ complex model might be required for a comprehensive understanding.
 In this paper, the effectiveness of the plus-minus statistic was evaluated to see if it is an effective predictor of player contribution
 in the National Hockey League. The plus minus does have some value as a predictor of offensive and defensive metrics. However, other
 advanced metrics like Corsi and Fenwick perform much better. The plus-minus is also heavily influenced by a player's team, making it 
-less valuable as an indivual evaluator of player effectiveness. Overall, the NHL should consider phasing out the use of the plus-minus
+less valuable as an individual evaluator of player effectiveness. Overall, the NHL should consider phasing out the use of the plus-minus
 statistic and consider more advanced metrics such as Corsi or Fenwick.
 
 
