@@ -68,16 +68,23 @@ less valuable as an indivual evaluator of player effectiveness.
 
 
 Within the realm of sports, many different statistics are used to determine how good a player is. This can include points,
-assists, time played, etc. But is there just one valaue that can be used to determine the effectiveness of a player? This is an 
+assists, time played, etc. But is there just one value that can be used to determine the effectiveness of a player? This is an 
 important topic, as fans, coaches, players, and general managers often want to get a better understanding of how an individual is
-impacting their team. It is one thing to watch the players to determine how good a player is, often referred to as the "eye test" but 
+impacting their team. It is one thing to watch the players to determine how good a player is, often referred to as the "eye test", but 
 with so many players, it is hard to quantify this. Enter the plus-minus statistic. Plus-minus is generally calculated by adding all the points
 scored by their team while they were playing and subtracting by points scored by the opposition while they were playing. The idea is that 
-if a player has a generally positive impact on their team, they will have a highly positive plus-minus. The two main sports where this
-statistic is used is basketball and ice hockey. 
+if a player has a generally positive impact on their team, they will have a highly positive plus-minus. In this project, plus-minus will
+be evaluated in the context of ice hockey in the National Hockey League (henceforth refered to as the NHL).
+
+The use of the plus-minus originated in ice hockey by the NHL team Montréal Canadiens \cite{plus_minus_rating}. The league
+started to keep track of plus-minus in 1956. The NHL defines plus-minus as "a team's goal differential while a particular player 
+is on the ice, excluding power play goals for and against but including empty net situations. All the skaters on the ice receive a plus 
+or minus when an even-strength goal or shorthanded goal is scored depending on which team scored" \cite{nhl_website}. This means
+that when a goal is scored, as long as there are the same number of players from each team on the ice, the team that scored gets plus one
+and the other team gets a minus one.
 
 While the plus-minus statistic is a great idea in theory, it does not come without its weaknesses. The biggest drawback to this
-statistic is its issues with independence. Take ice hockey for example. Many ice hockey players tend to play on "lines", meaning the same three 
+statistic is its issues with independence. Many ice hockey players tend to play on "lines", meaning the same three 
 forwards tend to play together and the same two defensemen usually play together. As a result, the performance of one player is highly dependent 
 on the performance of their linemates. In "A Regression-based Adjusted Plus-Minus Statistic for NHL Players" \cite{Macdonald_2011}, Brian
 MacDonald provides a perfect example of this with the Henrik and Daniel Sedin, Swedish twins who played together for the Vancouver Canucks. 
@@ -177,40 +184,6 @@ HDGA - Count of Goals off of High Danger Scoring Chances against that player's t
 
 HDGF\% - Percentage of High Danger Goals while that player is on the ice that are for that player's team. HDGF*100/(HDGF+HDGA)
 
-Medium Danger Scoring Chances - a scoring chance with a score of exactly 2.
-
-MDCF - Count of Medium Danger Scoring Chances for that player's team while that player is on the ice.
-
-MDCA - Count of Medium Danger Scoring Chances against that player's team while that player is on the ice.
-
-MDCF\% - Percentage of total Medium Danger Scoring Chances while that player is on the ice that are for that player's team. MDCF*100/(MDCF+MDCA)
-
-Medium Danger Goals - goals generated from Medium Danger Scoring Chances
-
-MDGF - Count of Goals off of Medium Danger Scoring Chances for that player's team while that player is on the ice.
-
-MDGA - Count of Goals off of Medium Danger Scoring Chances against that player's team while that player is on the ice.
-
-MDGF\% - Percentage of Medium Danger Goals while that player is on the ice that are for that player's team. MDGF*100/(MDGF+MDGA)
-
-Low Danger Scoring Chances - a scoring chance with a score of 1 or less. Does not include any attempts from the attacking team's neutral or defensive zone.
-
-LDCF - Count of Low Danger Scoring Chances for that player's team while that player is on the ice.
-
-LDCA - Count of Low Danger Scoring Chances against that player's team while that player is on the ice.
-
-LDCF\% - Percentage of total Low Danger Scoring Chances while that player is on the ice that are for that player's team. LDCF*100/(LDCF+LDCA)
-
-Low Danger Goals - goals generated from Low Danger Scoring Chances
-
-LDGF - Count of Goals off of Low Danger Scoring Chances for that player's team while that player is on the ice.
-
-LDGA - Count of Goals off of Low Danger Scoring Chances against that player's team while that player is on the ice.
-
-LDGF\% - Percentage of Low Danger Goals while that player is on the ice that are for that player's team. LDGF*100/(LDGF+LDGA)
-
-PDO
-
 SH\% - Percentage of Shots for that player's team while that player is on the ice that were Goals. GF*100/SF
 
 SV\% - Percentage of Shots against that player's team while that player is on the ice that were not Goals. GA*100/SA
@@ -220,6 +193,47 @@ PDO - Shooting percentage plus save percentage. (GF/SF)+(GA/SA)
 SH\% - Percentage of Shots for that player's team while that player is on the ice that were Goals. GF*100/SF
 
 SV\% - Percentage of Shots against that player's team while that player is on the ice that were not Goals. GA*100/SA
+
+Goals - Goals scored by the player, outside of the shootout.
+
+Assists - Any assist by the player.
+
+First Assists - Primary assists by the player.
+
+Second Assists - Secondary assists by the player.
+
+Total Points - Goals scored and assists by the player, outside of the shootout.
+
+IPP - Individual Point Percentage, the percentage of goals for that player's team while that player is on the ice that the 
+player earned a point on. 
+
+Shots - Any shot attempt on net (goals and shots on net) by the player, outside of the shootout.
+
+SH\% - Percentage of Shots by the player that were Goals. Goals*100/Shots
+
+iCF - Any shot attempt (goals, shots on net, misses and blocks) by the player, outside of the shootout.
+
+iFF - Any unblocked shot attempt (goals, shots on net and misses) by the player, outside of the shootout.
+
+iSCF - Any scoring chance by the player, outside of the shootout.
+
+iHDCF - Any high danger scoring chance by the player, outside of the shootout.
+
+Rush Attempts - Any rush shot attempt (goals, shots on net, misses and blocks) by the player, outside of the shootout.
+
+Rebounds Created - Any shot attempt (shots on net, misses and blocks) that results in a rebound shot attempt.
+
+Penalties Drawn - Number of penalties committed against the player.
+
+Giveaways - Number of unforced turnovers made by the player.
+
+Takeaways - Number of times the player takes the puck away from the opposition.
+
+Hits - Number of hits made by the player.
+
+Hits Taken - Number of hits taken by the player.
+
+Shots Blocked - Number of opposition shot attempts blocked by the player.
 
 
 The goal of this dataset was to provide a broader scope of variables that evaluate a players performance. By introducing more
@@ -485,6 +499,13 @@ advanced metrics like Corsi and Fenwick perform much better. The plus-minus is a
 less valuable as an individual evaluator of player effectiveness. Overall, the NHL should consider phasing out the use of the plus-minus
 statistic and consider more advanced metrics such as Corsi or Fenwick.
 
+In order for fans, players, and sports management to have a better understanding of what make a player "effective", you have to 
+summarize and quantify a large number of variables into one condensed number. That is, understandably, a tall order. While the plus-minus
+lays the ground-work for getting a better understanding of player effectiveness, there is more at play. General managers of sports teams
+often want to make the best team possible, getting players that will have a positive impact. Often times, people put a lot of emphasis on
+direct offensive output, such as points, to determine a players contribution. But there is so much more to consider, such as defensive skills,
+generating chances to score, etc, while still accounting for team effects. While plus-minus may not be the solution, the next step in the 
+world of sports statistics is to find a way to quantify the concept of "player effectiveness".
 
 \bibliography{refs}
 \bibliographystyle{mcap}
