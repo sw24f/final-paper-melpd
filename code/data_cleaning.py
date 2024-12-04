@@ -172,3 +172,13 @@ csv_file_path = 'data/cleaned_nhl_edge.csv'
 nst = clean_columns(nst, ['SF%', 'GF%', 'SCF%', 'HDCF%','HDGF%', 'On-Ice SH%', 'On-Ice SV%', 'PDO', 'Off. Zone Start %', 'Off. Zone Faceoff %'])
 print(nst.dtypes)
 nst.to_csv('data/cleaned_nst.csv', index=False)
+
+nst_indiv = pd.read_csv('data\Player Season Totals_individual - Natural Stat Trick.csv')
+
+print(nst_indiv.dtypes)
+
+nst_indiv['IPP'].fillna(0, inplace= True)
+nst_indiv['SH%'].fillna(0, inplace=True)
+nst_indiv['Faceoffs %'].fillna(0, inplace=True)
+
+nst_indiv.to_csv('data/cleaned_nst_indiv.csv', index=False)
