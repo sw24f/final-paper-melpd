@@ -53,12 +53,14 @@
 \maketitle
 
 \begin{abstract}
+
 The goal of this paper is to evaluate the plus minus statistic as a metric for determining the effectiveness of a player.
 This involves analysing the relationship between a players plus-minus rating and other offensive and defensive ratings,
 the effect of a players team performance on their plus-minus, and comparing plus-minus to other similar statistics. Based
 on the analysis performed, the plus minus does have some value as a predictor of offensive and defensive metrics. However, other
 advanced metrics like Corsi and Fenwick perform much better. The plus-minus is also heavily influenced by a player's team, making it 
 less valuable as an indivual evaluator of player effectiveness.
+
 \end{abstract}
 
 \doublespacing
@@ -88,12 +90,13 @@ statistic is its issues with independence. Many ice hockey players tend to play 
 forwards tend to play together and the same two defensemen usually play together. As a result, the performance of one player is highly dependent 
 on the performance of their linemates. In "A Regression-based Adjusted Plus-Minus Statistic for NHL Players" \cite{Macdonald_2011}, Brian
 MacDonald provides a perfect example of this with the Henrik and Daniel Sedin, Swedish twins who played together for the Vancouver Canucks. 
- \cite[Daniel spent 92\% of his playing time with Henrik, the highest percentage of any other player combination where both players have
+"Daniel spent 92\% of his playing time with Henrik, the highest percentage of any other player combination where both players have
 played over 700 minutes. Because of this high collinearity between the twins, it is difficult to separate the individual effect that each 
-player has on the net goals scored on the ice.]{Macdonald_2012} Many critics of the plus-minus argue that plus-minus is more of a team 
+player has on the net goals scored on the ice."\cite{Macdonald_2012} Many critics of the plus-minus argue that plus-minus is more of a team 
 statistic, since it is heavily influenced by team dynamics rather than individual contributions. Furthermore, numerous confounding variables, 
 such as the quality of the opponent and situational factors, make the calculation less reliable. As a result of these criticisms, alternatives 
-to the plus-minus statistic have been developed, such as Corsi or Fenwick, which is calculated using shot attempts rather than goals.
+to the plus-minus statistic have been developed, such as Corsi or Fenwick, which is calculated using shot attempts rather than goals. Brian 
+MacDonald introduces an adjusted plus-minus statistic that is based on weighted least squares regression\cite{Macdonald_2012}.
 
 The goal of this project will be to shed light on this controversial statistic and determine if plus-minus is truly an effective predictor
 to individual contribution, specifically in the National Hockey League (henceforth refered to as the NHL). Is the plus-minus a good evaluator 
@@ -245,13 +248,14 @@ advanced and unconventional statistics, there are more factors to consider in ev
 
 \subsection{Correlation Analysis}
 The main issue with the data is multicollinearity, where independent variables are highly correlated. A correlation matrix was created 
-with some of the more basic nhl statistics to highlight this issue, shown in Table \ref{tab:correlation_matrix}.
+with some of the more basic nhl statistics to highlight this issue, shown in Table \ref{tab:correlation_matrix2}.
 
 \begin{table}[h!]
   \centering
+  \scriptsize
   \caption{Correlation Matrix of Variables}
-  \input{correlation_matrix.tex}
-  \label{tab:correlation_matrix}
+  \input{correlation_matrix2.tex}
+  \label{tab:correlation_matrix2}
 \end{table}
 
 
@@ -318,6 +322,7 @@ coefficients are displayed in Table \ref{tab:rv}.
   \caption{Correlation Coefficients with Plus-Minus}
   \label{tab:rv}
 \centering
+\small
 \begin{tabular}{rr}
   \toprule
 Variable & Correlation Coefficient \\ 
@@ -367,15 +372,6 @@ Variable & Correlation Coefficient \\
   On-Ice SH\% & 0.324 \\ 
   On-Ice SV\% & 0.419 \\ 
   PDO & 0.546 \\ 
-  Off. Zone Starts & 0.310 \\ 
-  Neu. Zone Starts & 0.295 \\ 
-  Def. Zone Starts & 0.237 \\ 
-  On The Fly Starts & 0.273 \\ 
-  Off. Zone Start \% & 0.111 \\ 
-  Off. Zone Faceoffs & 0.354 \\ 
-  Neu. Zone Faceoffs & 0.315 \\ 
-  Def. Zone Faceoffs & 0.263 \\ 
-  Off. Zone Faceoff \% & 0.183 \\ 
   \bottomrule
 \end{tabular}
 \end{table}
