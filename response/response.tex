@@ -1,0 +1,140 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{natbib}
+\usepackage{listings}
+\usepackage{rotating, graphicx}
+\usepackage{booktabs, natbib}
+\usepackage[hyphens]{url}
+% \usepackage [english]{babel}
+\usepackage{amsmath, amsbsy, amsthm, epsfig, epsf, psfrag, graphicx,
+  amssymb, enumerate, bm}
+\usepackage{enumitem}
+
+\usepackage{color}
+
+\newcommand{\jy}[1]{\textcolor{red}{JY #1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue, citecolor=blue]{hyperref}
+
+
+
+
+\newenvironment{comment}%
+{\begin{quotation}\noindent\small\it\ignorespaces%
+  }{\end{quotation}}
+
+
+
+\begin{document}
+
+\begin{center}
+  {\Large\bf Response Letter to Reviewers' Comments}
+\end{center}
+
+
+\section{Summary}
+
+I would like to that Lucy Liu for her thoughtful, constructive
+comments. The manuscript has been revised accordingly with the
+following major changes:
+
+\begin{enumerate}
+\item
+  Following the reviewer's comments on expanding the literature
+  review, a new paragraph was added to the introduction that
+  expanded on other works that have been done. This involved reviewing
+  alternatives to the plus-minus and works that other people
+  within the sports statistics world have done to address this.
+  This also included addressing some downsides to these works and
+  why this project is necessary.
+  
+\item
+  In response to the reviewer's comment on clearly stating the 
+  hypothesis, the hypothesis was added to the last paragraph of the 
+  introduction that asked the over-arching question that is being
+  addressed in the paper. This set up the work that is being done
+  in the paper and what the readers can hope to take from this work.
+
+\item
+  The reasons that each of the models used were expanded. The need
+  for the assumptions to varified was added to the methods section.
+  The reviewer did make the suggestion of adding the plots to varify 
+  that the assumptions were satisfied. While I did make plots to make
+  sure all assumptions were varified, they were not included in the final
+  paper due to space concerns. Also, I did not want to take attention
+  away from the discussion at hand. There were additions made to the 
+  ridge regression section explaining why ridge was chosen over other 
+  regularization techniques.
+
+\item 
+  An extra paragraph was added to the end of the discussion to explain
+  future directions. The reason for this study was re-iterated as well as
+  explaining how it can be used in the NHL. Additional comments were added
+  to explain what can be done in the future based on this study and the
+  work of other people within the field.
+
+\end{enumerate}
+
+
+Point-by-point responses are as follows, with the reviewer/editor's comments in {\it italic}.
+
+
+\section{Response to Each Comment}
+
+\begin{comment}
+  The literature review could be expanded to include additional studies that 
+  have examined the plus-minus statistic and its alternatives. This could provide 
+  a better foundation for the reasoning behind this study and highlight gaps
+  that you hope to fill with your current research.
+\end{comment}
+
+This was a good note to improve the paper. While I initially mentioned Brian MacDonald's 
+work and impliedthat other people had proposed alternatives to the plus-minus, I did not 
+include enough detail. Including more literature helps the reader to have a better understanding
+of what work is already being done. It also allows me to explain why my study is 
+important and what it contributed to this conversation. A paragraph better explaining 
+the literature review was added as a fourth paragraph in the introduction.
+
+
+\begin{comment}
+  The paper evaluates the effectiveness of the plus-minus statistic compared 
+  to other metrics like Corsi and Fenwick. While the objectives are clear, the 
+  hypotheses are not explicitly stated. Clearly state the hypotheses at the end 
+  of the introduction.
+\end{comment}
+
+In the first draft, the overall goal of the project was stated as well as the 
+questions that would be answered in the paper. At the request of the reviewer,
+the hypothesis of the project was stated in the second to last sentence of the
+introduction. Hopefully this helps the readers to understand the over-arching 
+question that is being answered in this project.
+
+\begin{comment}
+  Although each method is described individually, the reason behind selecting these 
+  specific methods (Ex.why ridge regression and not another regularization technique) 
+  is not fully explained. Add a brief justification for each method and explain why 
+  alternatives were not selected.
+
+  Additionally, clearly outline the assumptions associated with each statistical 
+  method and discuss how these assumptions are checked and addressed within the 
+  analysis. Include diagnostic tests and results that assess whether the assumptions 
+  of each statistical method are satisfied. For example, provide residual plots 
+  or normality tests for mixed-effects models.
+\end{comment}
+
+
+
+\begin{comment}
+   The discussion section is missing future directions. Discuss what comes next after 
+   this study, or some possible new ideas or improvements to explore. Further elaborate 
+   on the implications of these findings for the NHL.
+\end{comment}
+
+
+\bibliographystyle{chicago}
+\bibliography{growth}
+
+%\atColsBreak{\pagediscards}
+\end{document}
