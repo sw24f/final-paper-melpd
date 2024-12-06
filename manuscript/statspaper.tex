@@ -276,7 +276,10 @@ better, or worse predictive abilities compared to plus-minus. Ridge regression, 
 in handling datasets where predictor variables are highly interrelated, as is the case with advanced hockey metrics. Ridge regression 
 estimates the contribution of metrics like Corsi, Fenwick, and scoring chances while controlling for their interdependencies. This 
 applies to hockey metrics like Corsi, Fenwick, scoring chances, etc. since these statistics often interact or overlap in measuring aspects 
-of performance.
+of performance. Ridge regression is appropriate because the data satisfies the model assumptions of independence, homoscedasticity, 
+and linearity. It is ideal for this project because it effectively manages multicollinearity, retains all variables for interpretability, 
+and improves predictive accuracy. Other regularization techniques like Lasso or Elastic Net are better suited for sparse models or when 
+variable selection is a priority, which is not the project's focus.
 
 \subsection{Cross-Validation}
 
@@ -303,7 +306,8 @@ To apply this model, individual metrics that describe on-ice performance (e.g., 
 contribution to plus/minus. At the same time, team-level averages (e.g., TeamMeanCF\%, TeamMeanGF\%) were included as random effects. This 
 approach distinguishes how much of a player's plus/minus statistic is attributable to their own performance versus the performance of their team.
 By using this mixed-effects approach, we can assess to what extent the plus/minus statistic reflects individual skill as opposed to team 
-strength, thus helping clarify if plus/minus can serve as a reliable individual performance measure. 
+strength, thus helping clarify if plus/minus can serve as a reliable individual performance measure. The model was tested to ensure that the
+assumptions of linearity, independence, normality, homoscedasticity, and random sampling were not violated.
 
 
 \section{Results}
@@ -315,12 +319,12 @@ both individual and team-level contributions.
 \subsection{Correlation Analysis}
 
 The initial analysis involved calculating the correlation coefficients between plus-minus and various performance metrics. The correlation 
-coefficients are displayed in Table \ref{tab:rv}.
+coefficients are displayed in Table \ref{tab:rv1}.
 
 
 \begin{table}[tbp]
   \caption{Correlation Coefficients with Plus-Minus}
-  \label{tab:rv}
+  \label{tab:rv1}
 \centering
 \small
 \begin{tabular}{rr}
@@ -343,7 +347,6 @@ Variable & Correlation Coefficient \\
   GWG & 0.306 \\ 
   S & 0.256 \\ 
   S\% & 0.048 \\ 
-  TOI/GP & 0.253 \\ 
   TOI & 0.292 \\ 
   CF & 0.369 \\ 
   CA & 0.211 \\ 
@@ -386,13 +389,13 @@ defensive performance.
 \subsection{Ridge Regression Analysis of Offensive and Defensive Contributions}
 
 Ridge regression was performed on three different sets of variables: combined metrics, offensive only, and defensive only. The combined 
-metrics included GF\%, SF\%, HDSC\%, PDO, On-Ice SH\%, and HDGF\%, metrics that combine both offensive and defensive factors, similar to 
-plus-minus.The offensive only metrics were CF, FF, SF, GF, SCF, HDCF, HDGF, GF\%, G, A, P/GP, CF\%, SCF\%, and On-Ice SH\%. The defensive 
-only metrics were CA, FA, SA, GA, SCF, HDCA, HDGA, On-Ice SV\%. The results can be seen in the table below.
+metrics included GF\%, SF\%, PDO, Takeaways, and SCF\%, metrics that combine both offensive and defensive factors, similar to 
+plus-minus.The offensive only metrics were CF, FF, SF, GF, SCF, HDCF, HDGF, GF\%, G, A, P/GP, CF\%, SCF\%, Rush Attempts, and On-Ice SH\%. 
+The defensive only metrics were SA, GA, SCF, HDCA, HDGA, On-Ice SV\%, Hits, Shots Blocked, and Penalties Drawn. The results can be seen in the table below.
 
 \begin{table}[tbp]
   \caption{Cross Validation Scores}
-  \label{tab:rv}
+  \label{tab:rv2}
 \centering
 \begin{tabular}{rrr}
   \toprule
@@ -407,7 +410,7 @@ Both & Offensive & Defensive \\
 \end{tabular}
 \end{table}
 
-The results in Table \ref{tab:rv} reveal:
+The results in Table \ref{tab:rv2} reveal:
 
 - **Combined Metrics**: A moderate cross-validation score around 0.53 suggests that these metrics explain a moderate amount of variance 
 in plus-minus.
@@ -430,27 +433,36 @@ The results of the mixed effects model can be summarized in the table.
     \toprule
     Predictor & Coefficient & Significance \\ 
     \midrule
-    GF\% & 1.950 & 0.000 \\
-    CF\% & 0.313 & 0.345 \\ 
+    GF\% & 1.947 & 0.000 \\
+    CF\% & 0.446 & 0.478 \\
+    SCF\% & -0.109 & 0.848 \\
     Team Mean CF\% & -3.111 & 0.000 \\ 
-    Team Mean GF\% & 0.846 & 0.000 \\ 
+    Team Mean GF\% & 0.846 & 0.000 \\
+    Team SCF\% & 3.127 & 0.001 \\ 
     \bottomrule
 \end{tabular}
 \end{table}
 
 The coefficient for individual Corsi For percentage is a small, positive effect on plus/minus, though it is not statistically significant 
-(p = 0.345). This suggests that while Corsi percentage (CF\%) has a slight positive association with plus/minus, it may not have a 
-substantial or reliable impact on explaining variance in plus/minus at the individual level. The positive and highly significant 
-coefficient for individual GF\% (p < 0.001) indicates a strong and reliable positive relationship between goals-for percentage and plus/minus. 
+(p = 0.478). This suggests that while Corsi percentage (CF\%) has a slight positive association with plus/minus, it may not have a 
+substantial or reliable impact on explaining variance in plus/minus at the individual level. Similarly, Scoring Chances For percentage 
+(SCF\%) also does not have a significant relationship with plus/minus (p = 0.848).The positive and highly significant coefficient
+for individual GF\% (p < 0.000) indicates a strong and reliable positive relationship between goals-for percentage and plus/minus. 
 Players with a higher individual GF\% are likely to have a higher plus/minus score, suggesting that goal-scoring and offensive contribution 
-are important for explaining plus/minus. The coefficent for Team Mean CF\% is negative, statistically significant coefficient (p < 0.001) 
-indicates that the team’s mean CF\% negatively impacts individual plus/minus. In teams with higher Corsi percentages, individual players 
-might have lower plus/minus scores, possibly due to the distribution of possession-based contributions across the team. The positive 
-coefficient of Team Mean GF\%, significant at p < 0.01, confirms that team-level GF\% positively influences individual plus/minus. This 
-suggests that players benefit from being on teams that are generally good at scoring, supporting the notion that plus/minus partially 
-reflects team-level offensive strength. These results highlight that plus/minus is significantly influenced by both individual offensive 
-performance (e.g., GF\%) and team-level scoring success (e.g., Team Mean GF\%), while possession metrics like CF\% are less predictive of 
-plus/minus, especially at the individual level.
+are important for explaining plus/minus. 
+
+The coefficent for Team Mean CF\% is negative, statistically significant coefficient (p < 0.000) indicates that the team’s mean CF\% 
+negatively impacts individual plus/minus. In teams with higher Corsi percentages, individual players might have lower plus/minus scores, 
+possibly due to the distribution of possession-based contributions across the team. The positive coefficient of Team Mean GF\%, 
+significant at p < 0.01, confirms that team-level GF\% positively influences individual plus/minus. This suggests that players benefit 
+from being on teams that are generally good at scoring, supporting the notion that plus/minus partially reflects team-level offensive 
+strength. Finally, the positive and significant coefficient for Team SCF (p=0.001) indicates that teams generating more scoring chances 
+positively affect individual plus/minus. This highlights the role of team offensive strength in influencing this statistic.
+
+These results confirm that plus/minus is heavily influenced by team-level performance metrics (e.g., Team Mean GF\% and Team SCF) 
+and less so by individual possession metrics like CF\% and SCF\%. The significant relationship between GF\% and plus/minus supports 
+the notion that offensive contributions and team success are key drivers of this statistic, reinforcing that plus/minus is a 
+team-oriented measure rather than solely reflective of individual performance.
 
 
 \subsection{Plus-Minus vs Corsi vs Fenwick}
