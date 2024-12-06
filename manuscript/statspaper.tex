@@ -94,14 +94,20 @@ MacDonald provides a perfect example of this with the Henrik and Daniel Sedin, S
 played over 700 minutes. Because of this high collinearity between the twins, it is difficult to separate the individual effect that each 
 player has on the net goals scored on the ice."\cite{Macdonald_2012} Many critics of the plus-minus argue that plus-minus is more of a team 
 statistic, since it is heavily influenced by team dynamics rather than individual contributions. Furthermore, numerous confounding variables, 
-such as the quality of the opponent and situational factors, make the calculation less reliable. As a result of these criticisms, alternatives 
-to the plus-minus statistic have been developed, such as Corsi or Fenwick, which is calculated using shot attempts rather than goals. Brian 
-MacDonald introduces an adjusted plus-minus statistic that is based on weighted least squares regression\cite{Macdonald_2012}.
+such as the quality of the opponent and situational factors, make the calculation less reliable. 
+
+As a result of these criticisms, alternatives to the plus-minus statistic have been developed. Many of these alternatives are either different 
+metrics or adjusted plus-minus\cite{plus_minus_rating}. Two popular examples are Corsi or Fenwick, which are calculated using shot attempts 
+rather than goals. Another popular metric is expected goals, which is based on the probability of a goal being scored depending on the shot.
+Brian MacDonald introduced an adjusted plus-minus statistic that is based on weighted least squares regression\cite{Macdonald_2012}. However,
+many of these alternatives are more complicated to calculate, which can be confusing to the average fan. Due to the fact that plus-minus
+is easy to interpret and calculate, it has remained in use despite its controversial background.
 
 The goal of this project will be to shed light on this controversial statistic and determine if plus-minus is truly an effective predictor
 to individual contribution, specifically in the National Hockey League (henceforth refered to as the NHL). Is the plus-minus a good evaluator 
 of offensive and defensive output? Is the plus-minus more reflective of how well a player is doing than how well a player is performing? 
-Are there better alternatives to evaluating individual player contribution? These are the questions that will be answered from this analysis.
+Are there better alternatives to evaluating individual player contribution? Is the plus-minus an effective predictor to individual contribution? 
+These are the questions that will be answered from this analysis.
 
 
 % roadmap
@@ -270,6 +276,9 @@ plus/minus, suggesting that they may capture overlapping aspects of offensive or
 
 \subsection{Ridge Regression}
 
+Ridge regression is used in this project to evaluate the relationship between various performance metrics and plus-minus, while addressing 
+multicollinearity among predictor variables. This regularization technique is particularly valuable in this context because many hockey 
+performance metrics, such as Scoring Chances For percentage (SCF\%) and Goals For percentage (GF\%), are often highly correlated.
 Due to the presence of correlation among variables, ridge regression was performed in order to identify how plus/minus can be employed 
 to assess offensive and defensive contribution. It was also used to determine if other advanced metrics Corsi or Fenwick have the same, 
 better, or worse predictive abilities compared to plus-minus. Ridge regression, a form of regularized linear regression, is beneficial 
@@ -279,7 +288,7 @@ applies to hockey metrics like Corsi, Fenwick, scoring chances, etc. since these
 of performance. Ridge regression is appropriate because the data satisfies the model assumptions of independence, homoscedasticity, 
 and linearity. It is ideal for this project because it effectively manages multicollinearity, retains all variables for interpretability, 
 and improves predictive accuracy. Other regularization techniques like Lasso or Elastic Net are better suited for sparse models or when 
-variable selection is a priority, which is not the project's focus.
+variable selection is a priority, which is not the project's focus. 
 
 \subsection{Cross-Validation}
 
@@ -512,8 +521,9 @@ summarize and quantify a large number of variables into one condensed number. Th
 lays the ground-work for getting a better understanding of player effectiveness, there is more at play. General managers of sports teams
 often want to make the best team possible, getting players that will have a positive impact. Often times, people put a lot of emphasis on
 direct offensive output, such as points, to determine a players contribution. But there is so much more to consider, such as defensive skills,
-generating chances to score, etc, while still accounting for team effects. While plus-minus may not be the solution, the next step in the 
-world of sports statistics is to find a way to quantify the concept of "player effectiveness".
+generating chances to score, etc, while still accounting for team effects. Many have tried to do this, but lack the interpretability and 
+simplicity of the plus-minus. While plus-minus may not be the solution, the next step in the world of sports statistics is to find a way to 
+quantify the concept of "player effectiveness" in a way that includes the simplicity of the plus-minus without its controversial nature.
 
 \bibliography{refs}
 \bibliographystyle{mcap}
