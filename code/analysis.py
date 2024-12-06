@@ -201,7 +201,7 @@ y_pred = ridge.predict(X_test)
 '''
 
 # Offensive alone
-X_o = nhl[['CF', 'FF', 'SF', 'GF', 'SCF', 'HDCF', 'HDGF', 'GF%', 'G', 'A', 'P/GP', 'CF%', 'SCF%', 'On-Ice SH%', 'Rush Attempts']]
+X_o = nhl[['SF', 'GF', 'SCF', 'HDCF', 'HDGF', 'GF%', 'G', 'A', 'P/GP', 'On-Ice SH%', 'Rush Attempts']]
 y_o = nhl['+/-']  # Plus/minus as the target variable
 
 # Scale the features for Ridge Regression
@@ -211,8 +211,15 @@ X_o_scaled = scaler.fit_transform(X_o)
 # Split the data into training and test sets
 X_train_o, X_test_o, y_train_o, y_test_o = train_test_split(X_o_scaled, y_o, test_size=0.2, random_state=42)
 
+alphas = np.logspace(-6, 6, 200)  # Range of alphas to test
+ridge_cv = RidgeCV(alphas=alphas, scoring='neg_mean_squared_error', cv=5)  # 5-fold CV
+ridge_cv.fit(X_train, y_train)
+
+best_alpha = ridge_cv.alpha_
+print(f"\nOptimal Lambda (alpha): {best_alpha}")
+
 # Fit Ridge Regression Model
-ridge_o = Ridge(alpha=1.0)  # alpha is the regularization strength (lambda in ridge regression)
+ridge_o = Ridge(alpha=best_alpha)  # alpha is the regularization strength (lambda in ridge regression)
 ridge_o.fit(X_train_o, y_train_o)
 
 # Evaluate the model using cross-validation
@@ -223,7 +230,7 @@ print("Cross-Validation Scores (Offensive):", cv_scores_o)
 y_pred_o = ridge_o.predict(X_test_o)
 
 # Defensive output
-X_d = nhl[['SA', 'GA', 'SCF', 'HDCA', 'HDGA', 'On-Ice SV%', 'Hits', 'Shots Blocked']]
+X_d = nhl[['SA', 'GA', 'SCF', 'HDCA', 'HDGA', 'On-Ice SV%', 'Hits', 'Shots Blocked', 'Penalties Drawn']]
 y_d = nhl['+/-']  # Plus/minus as the target variable
 
 # Scale the features for Ridge Regression
@@ -234,7 +241,13 @@ X_scaled_d = scaler.fit_transform(X_d)
 X_train_d, X_test_d, y_train_d, y_test_d = train_test_split(X_scaled_d, y_d, test_size=0.2, random_state=42)
 
 # Fit Ridge Regression Model
-ridge_d = Ridge(alpha=1.0)  # alpha is the regularization strength (lambda in ridge regression)
+alphas = np.logspace(-6, 6, 200)  # Range of alphas to test
+ridge_cv = RidgeCV(alphas=alphas, scoring='neg_mean_squared_error', cv=5)  # 5-fold CV
+ridge_cv.fit(X_train, y_train)
+
+best_alpha = ridge_cv.alpha_
+print(f"\nOptimal Lambda (alpha): {best_alpha}")
+ridge_d = Ridge(alpha=best_alpha)  # alpha is the regularization strength (lambda in ridge regression)
 ridge_d.fit(X_train_d, y_train_d)
 
 # Evaluate the model using cross-validation
@@ -249,20 +262,81 @@ from statsmodels.regression.mixed_linear_model import MixedLM
 # Simulating team-based random effects (Group means for teams)
 nhl['TeamMean_CF%'] = nhl.groupby('Team')['CF%'].transform('mean')
 nhl['TeamMean_GF%'] = nhl.groupby('Team')['GF%'].transform('mean')
+nhl['Team_SCF'] = nhl.groupby('Team')['SCF%'].transform('mean')
 
 # Define features (team and player contributions)
-X = nhl[['CF%', 'GF%', 'TeamMean_CF%', 'TeamMean_GF%']]
+X = nhl[['CF%', 'GF%', 'SCF%','TeamMean_CF%', 'TeamMean_GF%', 'Team_SCF']]
 y = nhl['+/-']
+
+# Fixed-effects-only model
+fixed_effects_model = sm.OLS(y, X).fit()
+
+# Mixed-effects model (with random effects)
+mixed_effects_model = MixedLM(y, X, groups=nhl['Team']).fit()
+
+from scipy.stats import chi2
+
+# Likelihood Ratio Test Statistic
+lr_stat = 2 * (mixed_effects_model.llf - fixed_effects_model.llf)  # Log-likelihood ratio
+
+# P-value calculation using the chi-squared distribution
+p_value = chi2.sf(lr_stat, df=1)  # Survival function (1-CDF), degrees of freedom = 1
+print(f"Likelihood Ratio Test Statistic: {lr_stat}")
+print(f"P-Value: {p_value}")
+
+if p_value < 0.05:
+    print("Including random effects significantly improves the model.")
+else:
+    print("Random effects are not significantly contributing to the model.")
 
 # Fit a Mixed-Effects model with team as a random effect
 md = MixedLM(y, X, groups=nhl['Team'])
 mdf = md.fit()
 print(mdf.summary())
 
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+
+# Extract random effects
+random_effects = mixed_effects_model.random_effects
+
+# Q-Q plot
+random_effects_values = [v[0] for v in random_effects.values()]  # Assuming one random effect per group
+stats.probplot(random_effects_values, dist="norm", plot=plt)
+plt.title("Q-Q Plot of Random Effects")
+plt.show()
+# Residuals and fitted values
+residuals = mixed_effects_model.resid
+fitted_values = mixed_effects_model.fittedvalues
+
+plt.scatter(fitted_values, residuals, alpha=0.7)
+plt.axhline(0, color='red', linestyle='--')
+plt.xlabel("Fitted Values")
+plt.ylabel("Residuals")
+plt.title("Residuals vs. Fitted Values")
+plt.show()
+for predictor in X.columns:
+    plt.scatter(nhl[predictor], residuals, alpha=0.7)
+    plt.axhline(0, color='red', linestyle='--')
+    plt.xlabel(predictor)
+    plt.ylabel("Residuals")
+    plt.title(f"Residuals vs. {predictor}")
+    plt.show()
+# Q-Q plot of residuals
+stats.probplot(residuals, dist="norm", plot=plt)
+plt.title("Q-Q Plot of Residuals")
+plt.show()
+
+# Histogram of residuals
+plt.hist(residuals, bins=20, edgecolor='black')
+plt.title("Histogram of Residuals")
+plt.xlabel("Residuals")
+plt.ylabel("Frequency")
+plt.show()
 
 # Plus minus vs other evaluators
 
-X_corsi = nhl[['GF%', 'SCF%', 'HDCF%', 'PDO', 'On-Ice SH%', 'On-Ice SV%', 'G', 'A']]
+X_corsi = nhl[['GF%', 'SCF%', 'HDCF%', 'PDO', 'On-Ice SH%', 'On-Ice SV%', 'G', 'A', 'Takeaways']]
 y_cf = nhl['CF%']  # Plus/minus as the target variable
 
 # Scale the features for Ridge Regression
@@ -285,7 +359,7 @@ y_pred_c = ridge_c.predict(X_test_c)
 
 
 
-X_fen = nhl[['GF%', 'SCF%', 'HDCF%', 'PDO', 'On-Ice SH%', 'On-Ice SV%', 'G', 'A']]
+X_fen = nhl[['GF%', 'SCF%', 'HDCF%', 'PDO', 'On-Ice SH%', 'On-Ice SV%', 'G', 'A', 'Takeaways']]
 y_ff = nhl['FF%']  # Plus/minus as the target variable
 
 # Scale the features for Ridge Regression
@@ -305,3 +379,27 @@ print("Cross-Validation Scores (Fenwick):", cv_scores_f)
 
 # Predict on the test set
 y_pred_f = ridge_f.predict(X_test_f)
+
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+nhl_edge_numeric = nhl_edge.select_dtypes(include=['number'])
+
+# Compute the correlation matrix
+correlation_matrix = nhl_edge_numeric.corr()
+
+# Set up the matplotlib figure
+plt.figure(figsize=(12, 10))
+
+# Draw the heatmap using seaborn
+sns.heatmap(correlation_matrix, annot=False, cmap='coolwarm', 
+            fmt=".2f", linewidths=0.5, cbar_kws={"shrink": 0.8})
+
+# Add titles and labels
+plt.title("Correlation Matrix for NHL Edge Dataset", fontsize=16)
+plt.xticks(fontsize=10, rotation=45, ha='right')
+plt.yticks(fontsize=10)
+plt.tight_layout()
+
+
