@@ -63,6 +63,34 @@ Off. Zone Faceoffs - Number of faceoffs in the offensive zone for which the play
 Neu. Zone Faceoffs - Number of faceoffs in the neutral zone for which the player was on the ice.
 Def. Zone Faceoffs - Number of faceoffs in the defensive zone for which the player was on the ice.
 Off. Zone Faceoff % - Percentage of faceoffs in the offensive zone for which the player was on the ice, excluding neutral zone faceoffs. Off. Zone Faceoffs*100/(Off. Zone Faceoffs+Def. Zone Faceoffs)
+Goals - Goals scored by the player, outside of the shootout.
+Assists - Any assist by the player.
+First Assists - Primary assists by the player.
+Second Assists - Secondary assists by the player.
+Total Points - Goals scored and assists by the player, outside of the shootout.
+IPP - Individual Point Percentage, the percentage of goals for that player's team while that player is on the ice that the player earned a point on. Total Points/Goals For
+Shooting
+Shots - Any shot attempt on net (goals and shots on net) by the player, outside of the shootout.
+SH% - Percentage of Shots by the player that were Goals. Goals*100/Shots
+iCF - Any shot attempt (goals, shots on net, misses and blocks) by the player, outside of the shootout.
+iFF - Any unblocked shot attempt (goals, shots on net and misses) by the player, outside of the shootout.
+iSCF - Any scoring chance by the player, outside of the shootout.
+iHDCF - Any high danger scoring chance by the player, outside of the shootout.
+Rush Attempts - Any rush shot attempt (goals, shots on net, misses and blocks) by the player, outside of the shootout.
+Rebounds Created - Any shot attempt (shots on net, misses and blocks) that results in a rebound shot attempt.
+Penalties
+PIM - Penalty minutes assessed to the player.
+Total Penalties - Total number of penalties taken by the player
+Minor - Number of minor penalties taken by the player.
+Major - Number of major penalties taken by the player.
+Misconduct - Number of 10 minute or game misconducts taken by the player.
+Penalties Drawn - Number of penalties committed against the player.
+Real-time
+Giveaways - Number of unforced turnovers made by the player.
+Takeaways - Number of times the player takes the puck away from the opposition.
+Hits - Number of hits made by the player.
+Hits Taken - Number of hits taken by the player.
+Shots Blocked - Number of opposition shot attempts blocked by the player.
 """
 
 import pandas as pd
