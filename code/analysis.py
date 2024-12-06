@@ -1,32 +1,4 @@
-'''
-import pandas as pd
 
-nhl_edge = pd.read_csv('data\cleaned_nhl_edge.csv')
-nst = pd.read_csv('data\cleaned_nst.csv')
-nhl = pd.merge(nhl_edge, nst, on='Player', how='inner')  # 'inner' merge keeps only players present in both datasets
-nhl = nhl[nhl['GP_x'] > 25]
-# Identify collinearity
-#print(nhl_edge.describe())
-# Select only numerical columns
-nhl_edge_numeric = nhl_edge.select_dtypes(include=['number'])
-correlation_matrix = nhl_edge_numeric.corr()
-#print(correlation_matrix)
-
-import matplotlib.pyplot as plt
-"""
-# Scatter plot of shots vs goals
-plt.scatter(nhl_edge['+/-'], nhl_edge['G'])
-plt.xlabel('Plus/Minus')
-plt.ylabel('Goals')
-plt.title('Plus/Minus vs Goals')
-plt.show()
-"""
-
-plus_minus_corr = nhl.select_dtypes(include=['number']).corr()['+/-']
-print(plus_minus_corr)
-
-print(nhl.columns)
-'''
 import pandas as pd
 import matplotlib.pyplot as plt
 from statsmodels.stats.outliers_influence import variance_inflation_factor
@@ -62,60 +34,10 @@ nhl.drop(columns=['Team_x', 'Team_y', 'Position_x', 'Position_y', 'GP_x', 'GP_y'
 nhl = nhl[nhl['GP'] > 25]
 
 print(nhl.columns)
-# Select predictors and target
+
 X = nhl[['GF%', 'PDO', 'SF%', 'Takeaways', 'SCF%']]
-y = nhl['+/-']  # Target variable
-'''
-from sklearn.preprocessing import PolynomialFeatures, StandardScaler
-from sklearn.linear_model import Ridge
-from sklearn.pipeline import Pipeline
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, r2_score
+y = nhl['+/-'] 
 
-# Split your data into train and test sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Create a pipeline to combine polynomial feature generation, scaling, and ridge regression
-degree = 2  # Adjust the degree based on your observations
-ridge_pipeline = Pipeline([
-    ('polynomial_features', PolynomialFeatures(degree=degree, include_bias=False)),
-    ('scaler', StandardScaler()),
-    ('ridge', Ridge(alpha=1109.752))  # Use your optimal lambda value
-])
-
-# Fit the pipeline to the training data
-ridge_pipeline.fit(X_train, y_train)
-
-# Predict on test data
-y_pred = ridge_pipeline.predict(X_test)
-
-# Evaluate the model
-mse = mean_squared_error(y_test, y_pred)
-r2 = r2_score(y_test, y_pred)
-
-print(f"Mean Squared Error: {mse}")
-print(f"R² Score: {r2}")
-
-import matplotlib.pyplot as plt
-
-# Plot predicted vs actual
-plt.scatter(y_test, y_pred)
-plt.axline((0, 0), slope=1, color='red', linestyle='--', label='Ideal Fit')
-plt.xlabel("Actual")
-plt.ylabel("Predicted")
-plt.title("Predicted vs Actual")
-plt.legend()
-plt.show()
-
-# Residual plot
-residuals = y_test - y_pred
-plt.scatter(y_pred, residuals)
-plt.axhline(0, color='red', linestyle='--')
-plt.xlabel("Predicted")
-plt.ylabel("Residuals")
-plt.title("Residuals vs Predicted")
-plt.show()
-'''
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
@@ -138,8 +60,8 @@ print(vif_data)
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=42)
 
 # Find the best lambda (alpha) using RidgeCV
-alphas = np.logspace(-6, 6, 200)  # Range of alphas to test
-ridge_cv = RidgeCV(alphas=alphas, scoring='neg_mean_squared_error', cv=5)  # 5-fold CV
+alphas = np.logspace(-6, 6, 200)  
+ridge_cv = RidgeCV(alphas=alphas, scoring='neg_mean_squared_error', cv=5) 
 ridge_cv.fit(X_train, y_train)
 
 best_alpha = ridge_cv.alpha_
@@ -169,85 +91,53 @@ print("\nBreusch-Pagan p-value:", p_value)
 
 
 # how plus/minus can be employed to assess offensive and defensive contribution with ridge regression/regular regression
-'''
-import pandas as pd
-from sklearn.linear_model import Ridge
-from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.preprocessing import StandardScaler
 
-# Define target and features (Offensive vs. Defensive)
-# Offensive variables: CF, FF, SF, GF, SCF, HDCF, HDGF, GF%, G, A, P/GP, CF%, SCF%, On-Ice SH%
-# Defensive variables: CA, FA, SA, GA, SCF, HDCA, HDGA, On-Ice SV%
-X = nhl[['GF%', 'SCF%', 'HDCF%', 'PDO', 'CF%', 'HDGF%', 'FF%']]
-y = nhl['+/-']  # Plus/minus as the target variable
-
-# Scale the features for Ridge Regression
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
-# Split the data into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
-
-# Fit Ridge Regression Model
-ridge = Ridge(alpha=best_alpha)  # alpha is the regularization strength (lambda in ridge regression)
-ridge.fit(X_train, y_train)
-
-# Evaluate the model using cross-validation
-cv_scores = cross_val_score(ridge, X_train, y_train, cv=5)
-print("Cross-Validation Scores (Offensive/Defensive):", cv_scores)
-
-# Predict on the test set
-y_pred = ridge.predict(X_test)
-'''
 
 # Offensive alone
 X_o = nhl[['SF', 'GF', 'SCF', 'HDCF', 'HDGF', 'GF%', 'G', 'A', 'P/GP', 'On-Ice SH%', 'Rush Attempts']]
-y_o = nhl['+/-']  # Plus/minus as the target variable
+y_o = nhl['+/-']
 
-# Scale the features for Ridge Regression
+
 scaler = StandardScaler()
 X_o_scaled = scaler.fit_transform(X_o)
 
-# Split the data into training and test sets
 X_train_o, X_test_o, y_train_o, y_test_o = train_test_split(X_o_scaled, y_o, test_size=0.2, random_state=42)
 
-alphas = np.logspace(-6, 6, 200)  # Range of alphas to test
-ridge_cv = RidgeCV(alphas=alphas, scoring='neg_mean_squared_error', cv=5)  # 5-fold CV
+alphas = np.logspace(-6, 6, 200) 
+ridge_cv = RidgeCV(alphas=alphas, scoring='neg_mean_squared_error', cv=5)  
 ridge_cv.fit(X_train, y_train)
 
 best_alpha = ridge_cv.alpha_
 print(f"\nOptimal Lambda (alpha): {best_alpha}")
 
 # Fit Ridge Regression Model
-ridge_o = Ridge(alpha=best_alpha)  # alpha is the regularization strength (lambda in ridge regression)
+ridge_o = Ridge(alpha=best_alpha)
 ridge_o.fit(X_train_o, y_train_o)
 
 # Evaluate the model using cross-validation
 cv_scores_o = cross_val_score(ridge_o, X_train_o, y_train_o, cv=5)
 print("Cross-Validation Scores (Offensive):", cv_scores_o)
 
-# Predict on the test set
+
 y_pred_o = ridge_o.predict(X_test_o)
 
 # Defensive output
 X_d = nhl[['SA', 'GA', 'SCF', 'HDCA', 'HDGA', 'On-Ice SV%', 'Hits', 'Shots Blocked', 'Penalties Drawn']]
-y_d = nhl['+/-']  # Plus/minus as the target variable
+y_d = nhl['+/-'] 
 
-# Scale the features for Ridge Regression
 scaler = StandardScaler()
 X_scaled_d = scaler.fit_transform(X_d)
 
-# Split the data into training and test sets
 X_train_d, X_test_d, y_train_d, y_test_d = train_test_split(X_scaled_d, y_d, test_size=0.2, random_state=42)
 
 # Fit Ridge Regression Model
-alphas = np.logspace(-6, 6, 200)  # Range of alphas to test
-ridge_cv = RidgeCV(alphas=alphas, scoring='neg_mean_squared_error', cv=5)  # 5-fold CV
+alphas = np.logspace(-6, 6, 200) 
+ridge_cv = RidgeCV(alphas=alphas, scoring='neg_mean_squared_error', cv=5)
 ridge_cv.fit(X_train, y_train)
 
 best_alpha = ridge_cv.alpha_
 print(f"\nOptimal Lambda (alpha): {best_alpha}")
-ridge_d = Ridge(alpha=best_alpha)  # alpha is the regularization strength (lambda in ridge regression)
+ridge_d = Ridge(alpha=best_alpha)
 ridge_d.fit(X_train_d, y_train_d)
 
 # Evaluate the model using cross-validation
